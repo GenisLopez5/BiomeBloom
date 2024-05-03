@@ -1,23 +1,20 @@
 #include "DAtom.hh"
-// #include "Renderer.hh"
-#include "rust_functions.h"
+#include "Renderer.hh"
+#include "Graphics.hpp"
 #include <iostream>
-#include <string>
 
 using namespace std;
 
-int main() {
-  int size_x = 5;
-  int size_y = 5;
+int main(int argc, char* argv[])
+{
+    int size_x = atoi(argv[1]);
+    int size_y = atoi(argv[2]);
 
-  // Renderer renderer;
+    Renderer renderer(size_x * size_y);
 
-  DAtom *render_buffer = new DAtom[size_x * size_y];
-
-  compute(render_buffer, size_x, size_y);
-
-  // compute(render_buffer, size_x * size_y);
-  // renderer.render(render_buffer);
-
-  cout << render_buffer[0].material << endl;
+    while (renderer.window.isOpen())
+    {
+        compute(renderer.render_buffer); 
+        renderer.render();
+    }
 }
