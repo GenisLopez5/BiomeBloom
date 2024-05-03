@@ -1,8 +1,7 @@
-#include "Atom.hh"
+#include "DAtom.hh"
 
-class Renderer{
-    private:
-
-    public:
-        void render(Atom* render_buffer);
+class Renderer {
+private:
+public:
+  void render(DAtom *render_buffer);
 };
