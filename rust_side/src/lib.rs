@@ -18,7 +18,8 @@ pub struct Atom {
 static LOGIC_BUFFER: Mutex<Vec<Atom>> = Mutex::new(Vec::new());
 
 #[no_mangle]
-pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_size: u64) {
+pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_height: u64) {
+    let buffer_size = buffer_height * buffer_width;
     let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
     for i in 0..buffer_size {
         logic_buffer[i as usize] = Atom { entity_tag: 42 };
@@ -60,4 +61,7 @@ fn test_neighbours() {
     let tags = find_neighbors(2,  array.as_mut_ptr(), 4, 3);
 
     dbg!(tags);
+    unsafe { for i in 0..buffer_size {
+        *drawing_buffer.add(i as usize)  = DAtom { material: 42, obsolete: true };
+    }}
 }
