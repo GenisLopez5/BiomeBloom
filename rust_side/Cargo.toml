@@ -6,5 +6,5 @@ edition = "2021"
 [dependencies]
 
 [lib]
-name = "my_rust_lib"
+name = "rusty_biome_bloom"
 crate-type = ["staticlib"]

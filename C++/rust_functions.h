@@ -1,2 +1,2 @@
-#include "Atom.hh"
-extern void compute(Atom *ptr, int buffer_size);
+#include "DAtom.hh"
+extern void compute(DAtom* ptr, int buffer_size);
