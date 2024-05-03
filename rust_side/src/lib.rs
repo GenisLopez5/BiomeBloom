@@ -51,10 +51,10 @@ impl From<Atom> for DAtom {
     }
 }
 
-fn init_logic_buffer(buffer_size: u64) {
-    let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
+fn init_logic_buffer(logic_buffer: &mut Vec<Atom>, buffer_size: u64) {
+    println!("Initializing ");
     for i in 0..buffer_size as usize {
-        logic_buffer[i] = Atom { entity_tag: 0, priority: 255, material: 0, obsolete: false }
+        logic_buffer.push(Atom { entity_tag: 0, priority: 255, material: 0, obsolete: false })
     }
 }
 
@@ -63,16 +63,21 @@ static LOGIC_BUFFER: Mutex<Vec<Atom>> = Mutex::new(Vec::new());
 
 #[no_mangle]
 pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_height: u64) {
+    println!("Internal logic is loading up:");
+    println!("Internal logic is loading up (again):");
     let buffer_size = buffer_height * buffer_width;
+    println!("About to lock mutex");
     let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
+    println!("Locked mutex");
 
     // We initialize to Nothing, for now 
-    if logic_buffer.is_empty() { init_logic_buffer(buffer_size) } 
+    if logic_buffer.is_empty() { init_logic_buffer(&mut *logic_buffer, buffer_size) } 
 
     let mut new_logic_buffer = logic_buffer.clone();
 
     for i in 0..buffer_size as usize {
         for p in 0..u8::MAX {
+            println!("i = '{i}', p = '{p}'");
             let current_atom = logic_buffer[i];
             if current_atom.priority != p { continue; }
 
