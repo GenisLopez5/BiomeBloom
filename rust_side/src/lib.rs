@@ -19,6 +19,15 @@ pub struct Atom {
     obsolete: bool,
 }
 
+impl Atom {
+    const NULL: Self = Self { 
+        entity_tag: 0,
+        priority: u8::MAX,
+        material: 0,
+        obsolete: true 
+    };
+}
+
 #[repr(u64)]
 enum Entity {
     Nothing,
@@ -42,6 +51,13 @@ impl From<Atom> for DAtom {
     }
 }
 
+fn init_logic_buffer(buffer_size: u64) {
+    let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
+    for i in 0..buffer_size as usize {
+        logic_buffer[i] = Atom { entity_tag: 0, priority: 255, material: 0, obsolete: false }
+    }
+}
+
 // Internal buffer, in case we need to add things like Lifetimes or whatever
 static LOGIC_BUFFER: Mutex<Vec<Atom>> = Mutex::new(Vec::new());
 
@@ -49,9 +65,9 @@ static LOGIC_BUFFER: Mutex<Vec<Atom>> = Mutex::new(Vec::new());
 pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_height: u64) {
     let buffer_size = buffer_height * buffer_width;
     let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
-    if logic_buffer.is_empty() { for i in 0..buffer_size as usize {
-         logic_buffer[i] = Atom { entity_tag: 0, priority: 255, material: 0, obsolete: false }
-    }} // We initialize to Nothing, for now 
+
+    // We initialize to Nothing, for now 
+    if logic_buffer.is_empty() { init_logic_buffer(buffer_size) } 
 
     let mut new_logic_buffer = logic_buffer.clone();
 
@@ -66,7 +82,10 @@ pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_
                 Entity::Nothing => {},
                 Entity::Ant => {
                     if bb == Entity::Ant as u64 {
-                        // Move ant down in logic buffer
+                        let new_i = move_down(i, buffer_width as usize, buffer_height as usize);
+                        new_logic_buffer[new_i] = logic_buffer[i];
+                        new_logic_buffer[new_i].obsolete = true;
+                        new_logic_buffer[i] = Atom::NULL;
                     }
                 },
 
@@ -74,9 +93,8 @@ pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_
         }
     }
 
-    unsafe {
+    // Update drawing buffer with the logic one
     for i in 0..buffer_size as usize {
-        *drawing_buffer.add(i) = logic_buffer[i].into();
-    }
+        unsafe { *drawing_buffer.add(i) = new_logic_buffer[i].into(); }
     }
 }
