@@ -1,20 +1,21 @@
 #include "DAtom.hh"
 #include "SFML/Graphics.hpp"
-#include <vector>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace sf;
 
-class Renderer{
-    private:
-        int render_buffer_size;
-        vector<Sprite> sprites;
-    public:
-        RenderWindow window;
-        DAtom* render_buffer;
+class Renderer {
+private:
+  int render_buffer_size;
+  vector<Sprite> sprites;
 
-        Renderer(int render_buffer_size);
+public:
+  RenderWindow window;
+  DAtom *render_buffer;
 
-        void render();
+  Renderer(int render_buffer_size);
+
+  void render();
 };
