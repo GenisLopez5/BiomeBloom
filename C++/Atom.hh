@@ -1,4 +1,6 @@
-typedef struct{
+#pragma once
+
+struct Atom{
     int material;
     bool obsolete;
-} Atom;
+};
