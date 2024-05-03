@@ -14,7 +14,7 @@ int main() {
 
   DAtom *render_buffer = new DAtom[size_x * size_y];
 
-  compute(render_buffer, size_x * size_y);
+  compute(render_buffer, size_x, size_y);
 
   // compute(render_buffer, size_x * size_y);
   // renderer.render(render_buffer);
