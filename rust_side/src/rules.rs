@@ -25,6 +25,40 @@ pub fn find_neighbours(index: usize, buffer: *mut Atom, width: usize, height: us
     result
 }
 
+pub fn i_to_xy(i: usize, width: usize) -> (usize, usize) {
+    let x = i % width;
+    let y = i / width;
+    (x, y)
+}
+
+pub fn xy_to_i(x: usize, y: usize, width: usize) -> usize {
+    y*width + x
+}
+
+pub fn move_left(i: usize, width: usize, height: usize) -> usize {
+    let (mut x, y) = i_to_xy(i, width);
+    x = (x + width - 1) % width;
+    xy_to_i(x, y, width)
+}
+
+pub fn move_right(i: usize, width: usize, height: usize) -> usize {
+    let (mut x, y) = i_to_xy(i, width);
+    x = (x + width + 1) % width;
+    xy_to_i(x, y, width)
+}
+
+pub fn move_down(i: usize, width: usize, height: usize) -> usize {
+    let (mut x, y) = i_to_xy(i, width);
+    x = (x + height + 1) % height;
+    xy_to_i(x, y, width)
+}
+
+pub fn move_up(i: usize, width: usize, height: usize) -> usize {
+    let (mut x, y) = i_to_xy(i, width);
+    x = (x + height - 1) % height;
+    xy_to_i(x, y, width)
+}
+
 //#[test]
 //fn test_neighbours() {
 //    let mut array = [Atom{entity_tag: 0};12];
