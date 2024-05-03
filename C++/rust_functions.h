@@ -1,0 +1,1 @@
+extern void compute(atom* ptr, int buffer_size);
