@@ -64,5 +64,22 @@ void Renderer::render() {
     window.display();
 }
 
+void Renderer::renderCanvas(Canvas& canvas)
+{
+    auto textMap = canvas.get_text_map();
+    auto spritemap = canvas.get_sprite_map();
+
+    for (auto& text : textMap)
+    {
+        window.draw(text.second);
+    }
+
+    for (auto& sprite : spritemap)
+    {
+        window.draw(sprite.second);
+    }
+    
+}
+
 int Renderer::getRows() const { return rows; };
 int Renderer::getCols() const { return cols; };

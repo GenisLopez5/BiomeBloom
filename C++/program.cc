@@ -5,6 +5,7 @@
 #include <SFML/Window/Mouse.hpp>
 #include <chrono>
 #include <iostream>
+#include "GameUI.hh"
 
 using namespace std;
 
@@ -13,6 +14,8 @@ const int SIZE = 20;
 int main(int argc, char *argv[]) {
 
     Renderer renderer(SIZE);
+
+    GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
 
     CFloatPVector floatFields;
     floatFields.ptr = new double *[2];
@@ -72,6 +75,8 @@ int main(int argc, char *argv[]) {
             last_compute = chrono::steady_clock::now();
             cout << "end compute" << endl;
         }
+
         renderer.render();
+        renderer.renderCanvas(gameUI);
     }
 }
