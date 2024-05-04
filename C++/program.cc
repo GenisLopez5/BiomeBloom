@@ -11,6 +11,7 @@
 using namespace std;
 
 const int SIZE = 20;
+const int NUM_OF_FIELDS = 3;
 
 int main(int argc, char *argv[]) {
 
@@ -18,13 +19,12 @@ int main(int argc, char *argv[]) {
 
     GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
 
-    int64_t *floatFields =
-        (int64_t *)malloc(64 * renderer.getRows() * renderer.getCols());
+    cout << "[INFO (C++)]: Creant fields" << endl;
+    int64_t* floatFields =  // <--- Mega buffer
+        (int64_t*)malloc(sizeof(int64_t) * NUM_OF_FIELDS*renderer.getCols()*renderer.getRows());
+    // TODO: Inicialitzeu els valors amb un funció continua aquí
 
-    for (int i = 0; i < renderer.getRows() * renderer.getCols(); ++i) {
-        floatFields[i] = 50;
-    }
-
+    cout << "[INFO (C++)]: Fields creats" << endl;
     sf::Event event;
 
     auto last_compute = chrono::steady_clock::now();
