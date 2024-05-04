@@ -20,8 +20,15 @@ int main(int argc, char *argv[]) {
     GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
 
     cout << "[INFO (C++)]: Creant fields" << endl;
-    int64_t* floatFields =  // <--- Mega buffer
-        (int64_t*)malloc(sizeof(int64_t) * NUM_OF_FIELDS*renderer.getCols()*renderer.getRows());
+    int64_t *floatFields = // <--- Mega buffer
+        (int64_t *)malloc(sizeof(int64_t) * NUM_OF_FIELDS * renderer.getCols() *
+                          renderer.getRows());
+    for (int i = 0; i < NUM_OF_FIELDS * renderer.getCols() * renderer.getRows();
+         ++i) {
+        int row = i / renderer.getCols();
+        int col = i % renderer.getCols();
+        floatFields[i] = (row - renderer.getCols() / 2);
+    }
     // TODO: Inicialitzeu els valors amb un funció continua aquí
 
     cout << "[INFO (C++)]: Fields creats" << endl;
@@ -47,7 +54,7 @@ int main(int argc, char *argv[]) {
             mouse.posx = mousePos.x;
             mouse.posy = mousePos.y;
 
-            mouse.selected_tag = 1;
+            mouse.selected_tag = 4;
             cout << "calling update mouse" << endl;
 
             update_mouse(mouse, renderer.render_buffer, renderer.getCols(),
