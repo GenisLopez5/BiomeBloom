@@ -26,16 +26,16 @@ pub fn find_neighbours(index: usize, buffer: *const Atom, width: usize, height: 
     result
 }
 
-impl From<u64> for Entity {
-    fn from(value: u64) -> Self {
+impl From<i64> for Entity {
+    fn from(value: i64) -> Self {
         let x: Entity = unsafe { std::mem::transmute(value as u64) }; // Assumes it's in range
         x
     } 
 }
 
-impl From<Entity> for u64 {
+impl From<Entity> for i64 {
     fn from(value: Entity) -> Self {
-        value as u64
+        value as i64
     } 
 }
 
@@ -55,7 +55,7 @@ impl From<Atom> for DAtom {
 fn rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>; 9])>> {
     use Entity as E;
     HashMap::from([
-        (E::Ant as u64, 
+        (E::Ant as i64, 
             vec![
                 ([None,          None,           None,
                  None,                          None,
@@ -75,7 +75,7 @@ fn rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>
                  None,          None,                None])
             ]
         ),
-        (E::Tnt as u64,
+        (E::Tnt.into(),
             vec![
                 ([Some(E::Ant.into()), None, None, None, None, None, None, None], [None; 9]),
                 ([None, Some(E::Ant.into()), None, None, None, None, None, None], [None; 9]),
@@ -141,9 +141,9 @@ pub fn apply_rules(logic_buffer: &Vec<Atom>, new_buf: &mut Vec<Atom>, index: usi
 
 #[test]
 fn test_neighbours() {
-    let mut array = [Atom{entity_tag:0 as u64, priority: 1, obsolete: false};12];
+    let mut array = [Atom{entity_tag:0.into(), priority: 1, obsolete: false};12];
     for i in 0..12 {
-        array[i] = Atom{entity_tag:i as u64, priority: 1, obsolete: false};
+        array[i] = Atom{entity_tag:i as i64, priority: 1, obsolete: false};
     }
     let tags = find_neighbours(2,  array.as_mut_ptr(), 4, 3);
 

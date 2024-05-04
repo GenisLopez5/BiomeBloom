@@ -8,7 +8,7 @@ use position::*;
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct DAtom {
-    material: u64,
+    material: i64,
     obsolete: bool,
 }
 
@@ -16,14 +16,15 @@ pub struct DAtom {
 pub struct Mouse {
     posx: i64,
     posy: i64,
+    selected_tag: i64,
     clicked: bool,
 }
 
-type EntityTag = u64;
+type EntityTag = i64;
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Atom {
-    entity_tag: u64, // Doubles as material
+    entity_tag: i64, // Doubles as material
     priority: u8,
     obsolete: bool,
 }
@@ -53,7 +54,7 @@ fn init_logic_buffer(logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_h
     }
     let ant_pos = Position::new(buffer_width / 2, buffer_height / 2, buffer_height);
     logic_buffer[ant_pos.as_idx(buffer_width, buffer_height)] = Atom {
-        entity_tag: Entity::Ant as u64,
+        entity_tag: Entity::Ant as i64,
         priority: 1,
         obsolete: true,
     };
