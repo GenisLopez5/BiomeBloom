@@ -65,42 +65,6 @@ fn primitive_rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<
     ])
 }
 
-// Rules abstrction
-pub fn apply_rules(logic_buffer: &Vec<Atom>, new_buf: &mut Vec<Atom>, index: usize, width: usize, height: usize) {
-    let rules = primitive_rules();
-    let rules = rules.get(&logic_buffer[index].entity_tag);
-    if let Some(rules) = rules {
-        let neighs = find_neighbours( index, logic_buffer.as_ptr(), width, height);
-
-        for rule in rules {
-            // Does rule apply?
-            if !neighs.into_iter().zip(rule.0)
-                .filter(|(_n, mb_r)| mb_r.is_some())
-                .map(|(n, mb_r)| (n, mb_r.unwrap()))
-                .all(|(n, r)| n == r) { continue; }
-
-            // If we're here, the rule does apply
-            let current_pos = Position::from_index(index, width, height);
-            let new_atoms = rule.1;
-            let mut cnt = 0;
-            for i in 0..3 {
-                for j in 0..3 {
-                    let new_pos = Position {
-                        x:  (current_pos.x + j + width - 1) % width,
-                        y:  (current_pos.y + i + height - 1) % height,
-                    };
-                    if let Some(new_atom) = new_atoms[cnt] {
-                        new_buf[new_pos.as_idx(width, height)].entity_tag = new_atom;
-                        new_buf[new_pos.as_idx(width, height)].obsolete = true;
-                        new_buf[new_pos.as_idx(width, height)].priority = 2;
-                    }
-                    cnt += 1;
-                }
-            }
-        }
-    }
-}
-
 
 fn neighbour_count(buffer: &[Atom], index: usize) -> HashMap<EntityTag, usize> {
     let mut result = HashMap::new();

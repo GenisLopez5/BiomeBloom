@@ -4,6 +4,8 @@ mod rules;
 use rules::*;
 mod position;
 use position::*;
+mod shaders;
+use shaders::*;
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
