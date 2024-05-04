@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
 
     MouseInfo mouse;
-    mouse.selected_tag = 0;
+    mouse.selected_tag = 1;
 
     cout << "[INFO (C++)]: Creant fields" << endl;
     int64_t *floatFields = // <--- Mega buffer
@@ -30,7 +30,8 @@ int main(int argc, char *argv[]) {
          ++i) {
         int row = i / renderer.getCols();
         int col = i % renderer.getCols();
-        floatFields[i] = abs(col - renderer.getCols() / 2) + abs(row - renderer.getRows() / 2);
+        floatFields[i] = abs(col - renderer.getCols() / 2) +
+                         abs(row - renderer.getRows() / 2);
     }
     // TODO: Inicialitzeu els valors amb un funció continua aquí
 
@@ -53,13 +54,14 @@ int main(int argc, char *argv[]) {
             mouse.posx = mousePos.x / SIZE;
             mouse.posy = mousePos.y / SIZE;
 
-            if (mousePos.y < renderer.window.getSize().y - 75)
-            {
-                mouse.selected_tag = mouse.posx / (renderer.window.getSize().x / 9);
+            if (mousePos.y > renderer.window.getSize().y - 75) {
+                mouse.selected_tag =
+                    mousePos.x / (renderer.window.getSize().x / 9);
                 gameUI.ChangedMaterial(mouse.selected_tag);
             }
 
-            cout << "calling update mouse" << endl;
+            cout << "calling update mouse: mouse tag" << mouse.selected_tag
+                 << endl;
 
             update_mouse(mouse, renderer.render_buffer, renderer.getCols(),
                          renderer.getRows());

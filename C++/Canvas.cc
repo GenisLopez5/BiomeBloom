@@ -16,8 +16,9 @@ Canvas::Canvas(int size_x, int size_y) {
     BottomRight = sf::Vector2f(size_x, size_y);
 }
 
-sf::Text& Canvas::addText(string textName, string content, string fontDir,
-                     unsigned int size, sf::Vector2f pos, sf::Vector2f anchor) {
+sf::Text &Canvas::addText(string textName, string content, string fontDir,
+                          unsigned int size, sf::Vector2f pos,
+                          sf::Vector2f anchor) {
     sf::Font f;
     f.loadFromFile(fontDir);
     TextMap[textName] = sf::Text(content, f, size);
@@ -26,8 +27,9 @@ sf::Text& Canvas::addText(string textName, string content, string fontDir,
 
     return TextMap[textName];
 }
-sf::Sprite& Canvas::addSprite(string spriteName, string textureDir, sf::Vector2f pos,
-                       sf::Vector2f anchor, float scale) {
+sf::Sprite &Canvas::addSprite(string spriteName, string textureDir,
+                              sf::Vector2f pos, sf::Vector2f anchor,
+                              float scale) {
     SpriteMap[spriteName] = {sf::Sprite(), sf::Texture()};
     SpriteMap[spriteName].texture.loadFromFile(textureDir);
     SpriteMap[spriteName].sprite.setTexture(SpriteMap[spriteName].texture);
