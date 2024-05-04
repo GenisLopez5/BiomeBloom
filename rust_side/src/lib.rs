@@ -55,13 +55,13 @@ pub extern "C" fn compute(
     buffer_width: i64,
     buffer_height: i64,
 ) {
-    let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
-    let mut new_logic_buffer = logic_buffer.clone();
-
     let (buffer_width, buffer_height): (usize, usize) = (buffer_width.try_into().unwrap(), buffer_height.try_into().unwrap());
     let buffer_size = buffer_height * buffer_width;
 
+    let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
     init_logic_buffer_if_needed(&mut *logic_buffer, buffer_width, buffer_height);
+    let mut new_logic_buffer = logic_buffer.clone();
+
 
     for i in 0..buffer_size {
         for p in 0..=u8::MAX {
