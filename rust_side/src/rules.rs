@@ -63,6 +63,27 @@ pub fn move_up(i: usize, width: usize, height: usize) -> usize {
     x = (x + height - 1) % height;
     xy_to_i(x, y, width)
 }
+
+impl TryFrom<u64> for Entity {
+    type Error = ();
+    fn try_from(value: u64) -> Result<Self, Self::Error> {
+        let x: Entity = unsafe { std::mem::transmute(value as u64) }; // Assumes it's in range
+        Ok(x)
+    } 
+}
+
+
+
+
+impl From<Atom> for DAtom {
+    fn from(value: Atom) -> Self {
+        Self {
+            material: value.material,
+            obsolete: value.obsolete
+        }
+    }
+}
+
 #[test]
 fn test_neighbours() {
     let mut array = [Atom{entity_tag:0 as u64, priority: 1, material: 1, obsolete: false};12];
