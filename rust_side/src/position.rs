@@ -1,8 +1,8 @@
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Position {
-    x: usize,
-    y: usize,
+    pub x: usize,
+    pub y: usize,
 }
 
 impl Position {
@@ -18,11 +18,11 @@ impl Position {
         (height - self.y - 1) * width + self.x
     }
     pub fn move_down(&self, amount: usize, height: usize) -> Self {
-        let y = (self.y + height + amount) % height;
+        let y = (self.y + height - amount) % height;
         Self { y, ..*self }
     }
     pub fn move_up(&self, amount: usize, height: usize) -> Self {
-        let y = (self.y + height - amount) % height;
+        let y = (self.y + height + amount) % height;
         Self { y, ..*self }
     }
     pub fn move_right(&self, amount: usize, width: usize) -> Self {

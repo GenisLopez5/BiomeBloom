@@ -1,9 +1,6 @@
+use std::collections::HashMap;
+
 use crate::*;
-
-fn positive_mod(i: isize, n: isize) -> usize {
-    ((i % n + n) % n) as usize
-}
-
 /// Pre: Index refers to element in grid
 /// Post: Eight element array of the eight neighbours (toroidal geometry) that surrounds the pixel at the given index
 /// The indexes of the array look like:
@@ -13,16 +10,16 @@ fn positive_mod(i: isize, n: isize) -> usize {
 /// 567
 /// ```
 pub fn find_neighbours(index: usize, buffer: *mut Atom, width: usize, height: usize) -> [EntityTag; 8] {
-    let x: isize = (index%width) as isize;
-    let y: isize = (index/width) as isize;
+    let Position {x, y} = Position::from_index(index, width, height);
     let mut counter = 0;
-    let mut result = [0 ;8];
+    let mut result = [0; 8];
     for i in 0..3 {
         for j in 0..3 {
-            let x1:usize = positive_mod((x-1 + j) as isize, width as isize);
-            let y1:usize = positive_mod((y-1 + i) as isize, height as isize);
+            let x1: usize = (x + width  - 1 + j).rem_euclid(width);
+            let y1: usize = (y + height - 1 + i).rem_euclid(height);
+            let idx = Position::new(x1, y1, height).as_idx(width, height);
             if i != 1 || j != 1 {
-                unsafe {result[counter] = (*buffer.add(x1 + y1*width)).entity_tag};
+                unsafe {result[counter] = (*buffer.add(idx)).entity_tag};
                 counter += 1;
             }
         }
@@ -39,8 +36,6 @@ impl TryFrom<u64> for Entity {
 }
 
 
-
-
 impl From<Atom> for DAtom {
     fn from(value: Atom) -> Self {
         Self {
@@ -49,6 +44,22 @@ impl From<Atom> for DAtom {
         }
     }
 }
+
+fn rules() -> HashMap<Entity, Vec<[Entity; 8]>> {
+    HashMap::from([
+        ()
+    ])
+}
+
+// Rules abstrction
+fn apply_rules(logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_height: usize) {
+
+
+}
+
+
+
+
 
 #[test]
 fn test_neighbours() {
