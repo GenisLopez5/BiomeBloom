@@ -21,7 +21,8 @@ Renderer::Renderer(int atom_size)
         pos.y = int(i / cols) * atom_size;
         sprites[i] = sf::Sprite(textures[0]);
         sprites[i].setPosition(pos);
-        sprites[i].scale({0.1f, 0.1f});
+        sprites[i].scale(atom_size / (double)textures[0].getSize().x,
+                         atom_size / (double)textures[0].getSize().y);
     }
 
     // SETUP RENDER BUFFER
