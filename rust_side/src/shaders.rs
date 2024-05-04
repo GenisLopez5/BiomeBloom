@@ -128,15 +128,25 @@ pub fn water_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<()
     let mut top_rule: Rule = ([None; 8], [None; 9]).into();
     let mut down_rule: Rule = ([None; 8], [None; 9]).into();
 
+    tl_rule.0.0[0]      = Some(Entity::Nothing.into());
     tl_rule.0.1[0]      = Some(Entity::Water.into());
+    top_rule.0.0[1]     = Some(Entity::Nothing.into());
     top_rule.0.1[1]     = Some(Entity::Water.into());
+    tr_rule.0.0[2]      = Some(Entity::Nothing.into());
     tr_rule.0.1[2]      = Some(Entity::Water.into());
+    left_rule.0.0[3]    = Some(Entity::Nothing.into());
     left_rule.0.1[3]    = Some(Entity::Water.into());
+    center_rule.0.0[4]  = Some(Entity::Nothing.into());
     center_rule.0.1[4]  = Some(Entity::Water.into());
+    right_rule.0.0[5]   = Some(Entity::Nothing.into());
     right_rule.0.1[5]   = Some(Entity::Water.into());
+    bl_rule.0.0[6]      = Some(Entity::Nothing.into());
     bl_rule.0.1[6]      = Some(Entity::Water.into());
+    down_rule.0.0[7]    = Some(Entity::Nothing.into());
     down_rule.0.1[7]    = Some(Entity::Water.into());
+    br_rule.0.0[8]      = Some(Entity::Nothing.into());
     br_rule.0.1[8]      = Some(Entity::Water.into());
+
 
     tl_rule.0.1[4]    = Some(Entity::Water.into());
     tr_rule.0.1[4]    = Some(Entity::Water.into());
