@@ -6,8 +6,6 @@
 Renderer::Renderer(int atom_size)
     : textures(2), window(sf::VideoMode(600, 800), "BiomeBloom"), shaders(2) {
 
-    window.setFramerateLimit(1);
-
     rows = window.getSize().y / atom_size;
     cols = window.getSize().x / atom_size;
 
@@ -17,8 +15,6 @@ Renderer::Renderer(int atom_size)
     shaders[0].loadFromFile("../data/mud_shader.glsl",
                             sf::Shader::Type::Fragment);
     shaders[1].loadFromFile("../data/grass.glsl", sf::Shader::Type::Fragment);
-
-    shaders[0].setUniform("ourColor", sf::Glsl::Vec4(0.1f, 0.5f, 0.3f, 1.0f));
 
     // SETUP SPRITES VECTOR (ALL START BEING DEFAULT)
     sf::Vector2f pos = {0, 0};
