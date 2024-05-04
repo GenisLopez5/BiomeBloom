@@ -2,6 +2,8 @@ use std::sync::Mutex;
 
 mod rules;
 use rules::*;
+mod position;
+use position::*;
 
 #[repr(C)]
 pub struct DAtom {
@@ -38,7 +40,8 @@ impl Atom {
 #[repr(u64)]
 enum Entity {
     Nothing,
-    Ant
+    Ant,
+    Tnt
 }
 
 fn init_logic_buffer(logic_buffer: &mut Vec<Atom>, buffer_size: u64) {
@@ -66,17 +69,25 @@ pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_
 
             let [tl, tc, tr, ll, rr, bl, bc, br] = 
                  find_neighbours(i, logic_buffer.as_mut_ptr(), buffer_width as usize, buffer_height as usize);
+            let curr_pos = Position::from_index(i, buffer_width as usize);
             match current_atom.entity_tag.try_into().unwrap() {
                 Entity::Nothing => {},
                 Entity::Ant => {
                     if bc == Entity::Nothing as u64 {
-                        let new_i = move_down(i, buffer_width as usize, buffer_height as usize);
+                        let new_i = curr_pos.move_down(buffer_height as usize).as_idx(buffer_width as usize);
                         new_logic_buffer[new_i] = logic_buffer[i];
                         new_logic_buffer[new_i].obsolete = true;
                         new_logic_buffer[i] = Atom::NULL;
                     }
                 },
+                Entity::Tnt => {
+                    if [tl, tc, tr, ll, rr, bl, bc, br].iter().any(|&p| p == Entity::Ant as u64) {
+                        for i in 0..3 { for j in 0..3 {
+                            new_logic_buffer[i]
+                        }}
+                    }
 
+                }
             }
         }
     }
