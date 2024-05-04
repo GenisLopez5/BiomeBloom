@@ -12,7 +12,7 @@ class Renderer {
     vector<sf::Sprite> sprites;
     vector<sf::Texture> textures;
 
-    void set_new_texture(const DAtom &d_atom, sf::Sprite &sprite);
+    void set_new_texture(DAtom &d_atom, sf::Sprite &sprite);
 
   public:
     sf::RenderWindow window;

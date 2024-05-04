@@ -4,7 +4,7 @@
 #include <iostream>
 
 Renderer::Renderer(int atom_size)
-    : textures(2), window(sf::VideoMode(600, 800), "BiomeBloom"), shaders(1) {
+    : textures(2), window(sf::VideoMode(600, 800), "BiomeBloom"), shaders(2) {
 
     window.setFramerateLimit(1);
 
@@ -16,6 +16,7 @@ Renderer::Renderer(int atom_size)
     textures[1].loadFromFile("../data/ant_texture.png");
     shaders[0].loadFromFile("../data/mud_shader.glsl",
                             sf::Shader::Type::Fragment);
+    shaders[1].loadFromFile("../data/grass.glsl", sf::Shader::Type::Fragment);
 
     shaders[0].setUniform("ourColor", sf::Glsl::Vec4(0.1f, 0.5f, 0.3f, 1.0f));
 
@@ -36,7 +37,7 @@ Renderer::Renderer(int atom_size)
     render_buffer = new DAtom[rows * cols];
 }
 
-void Renderer::set_new_texture(const DAtom &d_atom, sf::Sprite &sprite) {
+void Renderer::set_new_texture(DAtom &d_atom, sf::Sprite &sprite) {
     switch (d_atom.material) {
     case Types::ANT:
         sprite.setTexture(textures[1]);
@@ -45,6 +46,8 @@ void Renderer::set_new_texture(const DAtom &d_atom, sf::Sprite &sprite) {
         sprite.setTexture(textures[0]);
         break;
     }
+
+    d_atom.obsolete = false;
 }
 
 void Renderer::render() {
@@ -55,7 +58,11 @@ void Renderer::render() {
             set_new_texture(render_buffer[i], sprites[i]);
         }
 
-        window.draw(sprites[i], &shaders[0]);
+        if (render_buffer[i].material == Types::ANT) {
+            window.draw(sprites[i], &shaders[0]);
+        } else if (render_buffer[i].material == Types::DEFAULT) {
+            window.draw(sprites[i], &shaders[1]);
+        }
     }
 
     window.display();
