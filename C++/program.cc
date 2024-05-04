@@ -18,23 +18,17 @@ int main(int argc, char *argv[]) {
 
     GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
 
-    CFloatPVector floatFields;
-    floatFields.ptr = new int64_t *[2];
-    floatFields.size = 2;
-
-    floatFields.ptr[0] = new int64_t[renderer.getRows() * renderer.getCols()];
-    floatFields.ptr[1] = new int64_t[renderer.getRows() * renderer.getCols()];
+    int64_t *floatFields =
+        (int64_t *)malloc(64 * renderer.getRows() * renderer.getCols());
 
     for (int i = 0; i < renderer.getRows() * renderer.getCols(); ++i) {
-        floatFields.ptr[0][i] = 42;
-        floatFields.ptr[1][i] = 50;
+        floatFields[i] = 50;
     }
 
     sf::Event event;
 
     auto last_compute = chrono::steady_clock::now();
     while (renderer.window.isOpen()) {
-
         // Window events
         while (renderer.window.pollEvent(event))
             if (event.type == sf::Event::Closed) {
@@ -71,7 +65,7 @@ int main(int argc, char *argv[]) {
             mouse.posy = mousePos.y;
 
             mouse.selected_tag = 1;
-            cout << "float should be: " << **floatFields.ptr << endl;
+            cout << "first address is: " << floatFields << endl;
             compute(renderer.render_buffer, renderer.getCols(),
                     renderer.getRows(), mouse, floatFields);
             last_compute = chrono::steady_clock::now();

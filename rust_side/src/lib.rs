@@ -22,13 +22,6 @@ pub struct MouseInfo {
     selected_tag: i64,
 }
 
-#[repr(C)]
-#[derive(Clone, Copy, Debug)]
-pub struct CFloatPVector {
-    ptr: *mut *mut i64,
-    size: u64,
-}
-
 type EntityTag = i64;
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -64,7 +57,7 @@ pub extern "C" fn compute(
     buffer_width: i64,
     buffer_height: i64,
     mouse: &MouseInfo,
-    shader_buffers: CFloatPVector,
+    shader_buffers: *mut i64,
 ) {
     let (buffer_width, buffer_height): (usize, usize) = (
         buffer_width.try_into().unwrap(),
@@ -76,9 +69,9 @@ pub extern "C" fn compute(
     init_logic_buffer_if_needed(&mut *logic_buffer, buffer_width, buffer_height);
     let mut new_logic_buffer = logic_buffer.clone();
 
-    println!("Printing floats:");
+    println!("{:?}bbbb", shader_buffers);
 
-    let y = unsafe { **shader_buffers.ptr };
+    let y = unsafe { *shader_buffers };
     println!("{y}");
 
     for i in 0..buffer_size {
