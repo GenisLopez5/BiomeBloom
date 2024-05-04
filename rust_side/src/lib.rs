@@ -87,6 +87,7 @@ pub extern "C" fn compute(
                 1 => ant_shader,
                 2 => tnt_shader,
                 3 => fire_shader,
+                4 => water_shader,
                 t => unreachable!("Tag wasn't defined in the protocol in the GitHub Wiki: {t}"),
             };
             let mut attach = AttachmentsForApply {
