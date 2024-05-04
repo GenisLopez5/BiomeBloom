@@ -1,8 +1,9 @@
 #include "DAtom.hh"
 #include "MouseInfo.hh"
+#include <cstdint>
 
 struct CFloatPVector {
-    double **ptr;
+    int64_t **ptr;
     uint64_t size;
 };
 

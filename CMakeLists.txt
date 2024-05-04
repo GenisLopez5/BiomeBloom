@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(BiomeBloom)
 
-set(SRC C++/program.cc C++/Renderer.cc C++/Canvas.cc C++/GameUI.hh)
+set(SRC C++/program.cc C++/Canvas.cc C++/Renderer.cc C++/GameUI.cc )
 
 set(LIBS rusty_biome_bloom sfml-graphics sfml-window sfml-system)
 

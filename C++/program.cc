@@ -1,11 +1,12 @@
+#include "GameUI.hh"
 #include "MouseInfo.hh"
 #include "Renderer.hh"
 #include "rust_functions.h"
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <chrono>
+#include <cstdint>
 #include <iostream>
-#include "GameUI.hh"
 
 using namespace std;
 
@@ -18,15 +19,15 @@ int main(int argc, char *argv[]) {
     GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
 
     CFloatPVector floatFields;
-    floatFields.ptr = new double *[2];
+    floatFields.ptr = new int64_t *[2];
     floatFields.size = 2;
 
-    floatFields.ptr[0] = new double[renderer.getRows() * renderer.getCols()];
-    floatFields.ptr[1] = new double[renderer.getRows() * renderer.getCols()];
+    floatFields.ptr[0] = new int64_t[renderer.getRows() * renderer.getCols()];
+    floatFields.ptr[1] = new int64_t[renderer.getRows() * renderer.getCols()];
 
     for (int i = 0; i < renderer.getRows() * renderer.getCols(); ++i) {
-        floatFields.ptr[0][i] = 42.0;
-        floatFields.ptr[1][i] = 50.0;
+        floatFields.ptr[0][i] = 42;
+        floatFields.ptr[1][i] = 50;
     }
 
     sf::Event event;
@@ -70,6 +71,7 @@ int main(int argc, char *argv[]) {
             mouse.posy = mousePos.y;
 
             mouse.selected_tag = 1;
+            cout << "float should be: " << **floatFields.ptr << endl;
             compute(renderer.render_buffer, renderer.getCols(),
                     renderer.getRows(), mouse, floatFields);
             last_compute = chrono::steady_clock::now();

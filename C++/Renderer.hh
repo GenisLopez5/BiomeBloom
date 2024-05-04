@@ -1,7 +1,9 @@
+#include "Canvas.hh"
 #include "DAtom.hh"
 #include "SFML/Graphics.hpp"
-#include "Canvas.hh"
 #include <vector>
+
+#pragma once
 
 using namespace std;
 
@@ -22,7 +24,7 @@ class Renderer {
     Renderer(int atom_size);
 
     void render();
-    void renderCanvas(Canvas& canvas);
+    void renderCanvas(Canvas &canvas);
     int getRows() const;
     int getCols() const;
 };

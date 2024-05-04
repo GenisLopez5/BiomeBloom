@@ -25,8 +25,8 @@ pub struct MouseInfo {
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct CFloatPVector {
-    ptr: *mut *mut f64,
-    size: u64
+    ptr: *mut *mut i64,
+    size: u64,
 }
 
 type EntityTag = i64;
@@ -52,7 +52,7 @@ enum Entity {
     Nothing,
     Ant,
     Tnt,
-    Fire
+    Fire,
 }
 
 // Internal buffer, in case we need to add things like Lifetimes or whatever
@@ -66,24 +66,27 @@ pub extern "C" fn compute(
     mouse: &MouseInfo,
     shader_buffers: CFloatPVector,
 ) {
-    let (buffer_width, buffer_height): (usize, usize) = 
-        (buffer_width.try_into().unwrap(), buffer_height.try_into().unwrap());
+    let (buffer_width, buffer_height): (usize, usize) = (
+        buffer_width.try_into().unwrap(),
+        buffer_height.try_into().unwrap(),
+    );
     let buffer_size = buffer_height * buffer_width;
 
     let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
     init_logic_buffer_if_needed(&mut *logic_buffer, buffer_width, buffer_height);
     let mut new_logic_buffer = logic_buffer.clone();
 
-
     println!("Printing floats:");
 
-    //let y = unsafe { **shader_buffers.ptr };
-    //println!("{y}");
+    let y = unsafe { **shader_buffers.ptr };
+    println!("{y}");
 
     for i in 0..buffer_size {
         for p in 0..=u8::MAX {
             let current_atom = logic_buffer[i];
-            if current_atom.priority != p { continue }
+            if current_atom.priority != p {
+                continue;
+            }
 
             let shader = match current_atom.entity_tag.into() {
                 0i64 => nothing_shader,
@@ -97,8 +100,8 @@ pub extern "C" fn compute(
                 old_logic_buffer: &mut *logic_buffer,
                 new_logic_buffer: &mut new_logic_buffer,
                 mouse_pos: *mouse,
-                width:  buffer_width,
-                height: buffer_height
+                width: buffer_width,
+                height: buffer_height,
             };
 
             shader(i, &mut attach).unwrap();
@@ -112,7 +115,12 @@ pub extern "C" fn compute(
 }
 
 #[no_mangle]
-pub extern "C" fn update_mouse(mouse: MouseInfo, drawing_buffer: *mut DAtom, buffer_width: i64, buffer_height: i64) {
+pub extern "C" fn update_mouse(
+    mouse: MouseInfo,
+    drawing_buffer: *mut DAtom,
+    buffer_width: i64,
+    buffer_height: i64,
+) {
     let buffer_width: usize = buffer_width.try_into().unwrap();
     let buffer_height: usize = buffer_height.try_into().unwrap();
     if mouse.posx >= 0_i64 && mouse.posy >= 0_i64 {
@@ -121,9 +129,9 @@ pub extern "C" fn update_mouse(mouse: MouseInfo, drawing_buffer: *mut DAtom, buf
         let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
         init_logic_buffer_if_needed(&mut *logic_buffer, buffer_width, buffer_height);
         logic_buffer[pos.as_idx(buffer_width, buffer_height)] = Atom {
-                entity_tag: mouse.selected_tag,
-                priority: 2,
-                obsolete: true,
+            entity_tag: mouse.selected_tag,
+            priority: 2,
+            obsolete: true,
         };
     }
 
@@ -141,10 +149,16 @@ fn get_buffer_parity(drawing_buffer: *mut DAtom, buffer_width: usize, buffer_hei
 }
 
 /// First time set up of logical buffer (initial state of simulation). All Atoms should be marked as obsolete, here
-fn init_logic_buffer_if_needed(logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_height: usize) {
-    if !logic_buffer.is_empty() { return; }
+fn init_logic_buffer_if_needed(
+    logic_buffer: &mut Vec<Atom>,
+    buffer_width: usize,
+    buffer_height: usize,
+) {
+    if !logic_buffer.is_empty() {
+        return;
+    }
     printinfo("Initializing logic buffer");
-    for _ in 0..buffer_width*buffer_height {
+    for _ in 0..buffer_width * buffer_height {
         logic_buffer.push(Atom::NULL)
     }
     let ant_pos = Position::new(buffer_width / 2, buffer_height / 2);
