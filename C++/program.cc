@@ -23,8 +23,15 @@ int main(int argc, char *argv[]) {
     mouse.selected_tag = 0;
 
     cout << "[INFO (C++)]: Creant fields" << endl;
-    int64_t* floatFields =  // <--- Mega buffer
-        (int64_t*)malloc(sizeof(int64_t) * NUM_OF_FIELDS*renderer.getCols()*renderer.getRows());
+    int64_t *floatFields = // <--- Mega buffer
+        (int64_t *)malloc(sizeof(int64_t) * NUM_OF_FIELDS * renderer.getCols() *
+                          renderer.getRows());
+    for (int i = 0; i < NUM_OF_FIELDS * renderer.getCols() * renderer.getRows();
+         ++i) {
+        int row = i / renderer.getCols();
+        int col = i % renderer.getCols();
+        floatFields[i] = abs(col - renderer.getCols() / 2) + abs(row - renderer.getRows() / 2);
+    }
     // TODO: Inicialitzeu els valors amb un funció continua aquí
 
     cout << "[INFO (C++)]: Fields creats" << endl;
