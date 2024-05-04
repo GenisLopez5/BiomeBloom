@@ -18,7 +18,6 @@ pub struct Mouse {
     posx: i64,
     posy: i64,
     selected_tag: i64,
-    clicked: bool,
 }
 
 type EntityTag = i64;
@@ -75,15 +74,18 @@ pub extern "C" fn compute(
     println!("Finished calculating frame");
 
     *logic_buffer = new_logic_buffer;
-    get_buffer_parity(drawing_buffer, &mut logic_buffer, buffer_width, buffer_height)
+    std::mem::drop(logic_buffer); // Drop guard, parity needs it unlocked
+    get_buffer_parity(drawing_buffer, buffer_width, buffer_height)
 }
 
 #[no_mangle]
-pub extern "C" fn update_mouse(mouse: Mouse, drawing_buffer: *mut DAtom, logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_height: usize) {
-    println!("Click is: {}", mouse.clicked);
-    if mouse.clicked && mouse.posx >= 0_i64 && mouse.posy >= 0_i64 {
+pub extern "C" fn update_mouse(mouse: Mouse, drawing_buffer: *mut DAtom, buffer_width: i64, buffer_height: i64) {
+    let buffer_width: usize = buffer_width.try_into().unwrap();
+    let buffer_height: usize = buffer_height.try_into().unwrap();
+    if mouse.posx >= 0_i64 && mouse.posy >= 0_i64 {
         dbg!(mouse);
         let pos = Position::new(mouse.posx as usize, mouse.posy as usize);
+        let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
         logic_buffer[pos.as_idx(buffer_width, buffer_height)] = Atom {
                 entity_tag: mouse.selected_tag,
                 priority: 2,
@@ -91,10 +93,12 @@ pub extern "C" fn update_mouse(mouse: Mouse, drawing_buffer: *mut DAtom, logic_b
         };
     }
 
-    get_buffer_parity(drawing_buffer, logic_buffer, buffer_width, buffer_height)
+    get_buffer_parity(drawing_buffer, buffer_width, buffer_height)
 }
 
-fn get_buffer_parity(drawing_buffer: *mut DAtom, logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_height: usize) {
+/// pre: LOGIC_BUFFER must not be locked when this function is called
+fn get_buffer_parity(drawing_buffer: *mut DAtom, buffer_width: usize, buffer_height: usize) {
+    let logic_buffer = LOGIC_BUFFER.lock().unwrap();
     for i in 0..buffer_height * buffer_width {
         unsafe {
             *drawing_buffer.add(i) = logic_buffer[i].into();
