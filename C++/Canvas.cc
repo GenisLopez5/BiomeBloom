@@ -1,4 +1,5 @@
 #include "Canvas.hh"
+#include <SFML/Graphics/Texture.hpp>
 
 Canvas::Canvas(int size_x, int size_y) {
     this->size_x = size_x;
@@ -15,35 +16,26 @@ Canvas::Canvas(int size_x, int size_y) {
     BottomRight = sf::Vector2f(size_x, size_y);
 }
 
-sf::Text &Canvas::addText(string textName, string content, string fontDir,
-                          unsigned int size, sf::Vector2f pos,
-                          sf::Vector2f anchor) {
+void Canvas::addText(string textName, string content, string fontDir,
+                     unsigned int size, sf::Vector2f pos, sf::Vector2f anchor) {
     sf::Font f;
     f.loadFromFile(fontDir);
     TextMap[textName] = sf::Text(content, f, size);
-    sf::Text &text = TextMap[textName];
     // text.setOrigin(sf::Vector2f(anchor.x * text.))
-    text.setPosition(pos);
-
-    return text;
+    TextMap[textName].setPosition(pos);
 }
-sf::Sprite Canvas::addSprite(string spriteName, string textureDir,
-                             sf::Vector2f pos, sf::Vector2f anchor,
-                             float scale) {
-    sf::Texture t;
-    t.loadFromFile(textureDir);
-    SpriteMap[spriteName] = sf::Sprite(t);
-    SpriteMap[spriteName].setOrigin(anchor.x * t.getSize().x,
-                                    anchor.y * t.getSize().y);
-    SpriteMap[spriteName].setPosition(pos);
-    SpriteMap[spriteName].setScale(sf::Vector2f(scale, scale));
-    return SpriteMap[spriteName];
+void Canvas::addSprite(string spriteName, string textureDir, sf::Vector2f pos,
+                       sf::Vector2f anchor, float scale) {
+    SpriteMap[spriteName] = {sf::Sprite(), sf::Texture()};
+    SpriteMap[spriteName].texture.loadFromFile(textureDir);
+    SpriteMap[spriteName].sprite.setTexture(SpriteMap[spriteName].texture);
+
+    SpriteMap[spriteName].sprite.setOrigin(
+        anchor.x * SpriteMap[spriteName].texture.getSize().x,
+        anchor.y * SpriteMap[spriteName].texture.getSize().y);
+
+    SpriteMap[spriteName].sprite.setPosition(pos);
+    SpriteMap[spriteName].sprite.setScale(sf::Vector2f(scale, scale));
 }
 void Canvas::removeText(string textName) { TextMap.erase(textName); }
 void Canvas::removeSprite(string spriteName) { SpriteMap.erase(spriteName); }
-const map<string, sf::Sprite> &Canvas::get_sprite_map() const {
-    return SpriteMap;
-}
-const map<string, sf::Text> &Canvas::get_text_map() const { return TextMap; }
-
-void Canvas::Setup() { return; };

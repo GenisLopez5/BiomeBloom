@@ -47,7 +47,6 @@ void Renderer::set_new_texture(DAtom &d_atom, sf::Sprite &sprite) {
 }
 
 void Renderer::render() {
-    window.clear();
 
     for (int i = 0; i < rows * cols; ++i) {
         if (render_buffer[i].obsolete) {
@@ -60,25 +59,23 @@ void Renderer::render() {
             window.draw(sprites[i], &shaders[1]);
         }
     }
-
-    window.display();
 }
 
-void Renderer::renderCanvas(Canvas& canvas)
-{
-    auto textMap = canvas.get_text_map();
-    auto spritemap = canvas.get_sprite_map();
+void Renderer::renderCanvas(Canvas &canvas) {
 
-    for (auto& text : textMap)
-    {
+    for (const auto &sprite : canvas.SpriteMap) {
+        cout << "sprite pos: " << sprite.second.sprite.getPosition().y << endl;
+        cout << "renderg sprite: " << sprite.first << endl;
+        window.draw(sprite.second.sprite);
+    }
+
+    cout << "sprites drown" << endl;
+
+    /* for (const auto &text : canvas.TextMap) {
         window.draw(text.second);
-    }
+    } */
 
-    for (auto& sprite : spritemap)
-    {
-        window.draw(sprite.second);
-    }
-    
+    cout << "text_drown drown" << endl;
 }
 
 int Renderer::getRows() const { return rows; };

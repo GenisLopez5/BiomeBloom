@@ -72,7 +72,9 @@ int main(int argc, char *argv[]) {
             cout << "end compute" << endl;
         }
 
+        renderer.window.clear();
         renderer.render();
         renderer.renderCanvas(gameUI);
+        renderer.window.display();
     }
 }
