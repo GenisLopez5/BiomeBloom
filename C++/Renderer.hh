@@ -8,6 +8,7 @@ class Renderer {
   private:
     int rows;
     int cols;
+    vector<sf::Shader> shaders;
     vector<sf::Sprite> sprites;
     vector<sf::Texture> textures;
 

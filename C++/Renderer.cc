@@ -1,9 +1,10 @@
 #include "Renderer.hh"
 #include "Types.hh"
+#include <SFML/Graphics/Glsl.hpp>
 #include <iostream>
 
 Renderer::Renderer(int atom_size)
-    : textures(2), window(sf::VideoMode(600, 800), "BiomeBloom") {
+    : textures(2), window(sf::VideoMode(600, 800), "BiomeBloom"), shaders(1) {
 
     window.setFramerateLimit(1);
 
@@ -13,6 +14,10 @@ Renderer::Renderer(int atom_size)
     // SETUP texture[0] DEFAULT TEXTURE
     textures[0].loadFromFile("../data/default.png");
     textures[1].loadFromFile("../data/ant_texture.png");
+    shaders[0].loadFromFile("../data/mud_shader.glsl",
+                            sf::Shader::Type::Fragment);
+
+    shaders[0].setUniform("ourColor", sf::Glsl::Vec4(0.1f, 0.5f, 0.3f, 1.0f));
 
     // SETUP SPRITES VECTOR (ALL START BEING DEFAULT)
     sf::Vector2f pos = {0, 0};
@@ -50,7 +55,7 @@ void Renderer::render() {
             set_new_texture(render_buffer[i], sprites[i]);
         }
 
-        window.draw(sprites[i]);
+        window.draw(sprites[i], &shaders[0]);
     }
 
     window.display();
