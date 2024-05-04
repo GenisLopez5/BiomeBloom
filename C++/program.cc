@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
         mousePos.y = mousePos.y / SIZE;
 
         bool leftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-        MouseInfo mouse = (MouseInfo){mousePos.x, mousePos.y, leftPressed};
+        MouseInfo mouse = //Afegiu la tag aquí: //(MouseInfo){mousePos.x, mousePos.y, leftPressed};
 
         compute(renderer.render_buffer, renderer.getCols(), renderer.getRows(),
                 mouse);
