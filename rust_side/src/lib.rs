@@ -89,37 +89,8 @@ pub extern "C" fn compute(
                 continue;
             }
 
-            let [tl, tc, tr, ll, rr, bl, bc, br] = find_neighbours(
-                i,
-                logic_buffer.as_mut_ptr(),
-                buffer_width,
-                buffer_height
-            );
             let curr_pos = Position::from_index(i, buffer_width, buffer_height);
-            match current_atom.entity_tag.try_into().unwrap() {
-                Entity::Nothing => {}
-                Entity::Ant => {
-                    if bc == Entity::Nothing as u64 {
-                        let new_i = curr_pos
-                            .move_down(1, buffer_height)
-                            .as_idx(buffer_width, buffer_height);
-                        new_logic_buffer[new_i] = logic_buffer[i];
-                        new_logic_buffer[new_i].obsolete = true;
-                        new_logic_buffer[i] = Atom::NULL;
-                    }
-                }
-                Entity::Tnt => {
-                    if [tl, tc, tr, ll, rr, bl, bc, br]
-                        .iter()
-                        .any(|&p| p == Entity::Ant as u64)
-                    {
-                        for neigh in curr_pos.neighbours(buffer_width, buffer_height) {
-                            new_logic_buffer[neigh.as_idx(buffer_width, buffer_height)] = Atom::NULL;
-                        }
-                        new_logic_buffer[curr_pos.as_idx(buffer_width, buffer_height)] = Atom::NULL;
-                    }
-                }
-            }
+            apply_rules(&mut logic_buffer, &mut new_logic_buffer, i, buffer_width, buffer_height);
         }
     }
 

@@ -27,11 +27,16 @@ pub fn find_neighbours(index: usize, buffer: *mut Atom, width: usize, height: us
     result
 }
 
-impl TryFrom<u64> for Entity {
-    type Error = ();
-    fn try_from(value: u64) -> Result<Self, Self::Error> {
+impl From<u64> for Entity {
+    fn from(value: u64) -> Self {
         let x: Entity = unsafe { std::mem::transmute(value as u64) }; // Assumes it's in range
-        Ok(x)
+        x
+    } 
+}
+
+impl From<Entity> for u64 {
+    fn from(value: Entity) -> Self {
+        value as u64
     } 
 }
 
@@ -45,16 +50,57 @@ impl From<Atom> for DAtom {
     }
 }
 
-fn rules() -> HashMap<Entity, Vec<[Entity; 8]>> {
+/// Map from Entity -> Vec<(Neighbours, [Option<Entity>; 9])>
+/// Maps entity with its (needed) neighbours to its (maybe) changing surrounding neighbours
+fn rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>; 9])>> {
+    use Entity as E;
     HashMap::from([
-        ()
+        (E::Ant as u64, 
+            vec![(
+                [None,                    None, None,
+                 None,                    None,
+                 None, Some(E::Nothing.into()), None],
+                [None,                    None, None, 
+                 None, Some(E::Nothing.into()), None,
+                 None, Some(E::Ant.into()),     None])
+            ]
+        ),
+        (E::Tnt as u64,
+            vec![
+                ([Some(E::Ant.into()), None, None, None, None, None, None, None], [None; 9]),
+                ([None, Some(E::Ant.into()), None, None, None, None, None, None], [None; 9]),
+                ([None, None, Some(E::Ant.into()), None, None, None, None, None], [None; 9]),
+                ([None, None, None, Some(E::Ant.into()), None, None, None, None], [None; 9]),
+                ([None, None, None, None, Some(E::Ant.into()), None, None, None], [None; 9]),
+                ([None, None, None, None, None, Some(E::Ant.into()), None, None], [None; 9]),
+                ([None, None, None, None, None, None, Some(E::Ant.into()), None], [None; 9]),
+                ([None, None, None, None, None, None, None, Some(E::Ant.into())], [None; 9]),
+            ]
+        )
     ])
 }
 
 // Rules abstrction
-fn apply_rules(logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_height: usize) {
-
-
+pub fn apply_rules(logic_buffer: &mut Vec<Atom>, new_buf: &mut Vec<Atom>, index: usize, buffer_width: usize, buffer_height: usize) {
+    let rules = rules();
+    let rules = rules.get(&logic_buffer[index].entity_tag);
+    if let Some(rules) = rules {
+        //let [tl, tc, tr, ll, rr, bl, bc, br] = find_neighbours(
+        let neighs = find_neighbours(
+            index,
+            logic_buffer.as_mut_ptr(),
+            buffer_width,
+            buffer_height
+        );
+        'rule_loop: for rule in rules {
+            // Does rule apply?
+            for (n, mb_r) in neighs.into_iter().zip(rule.0) {
+                if let Some(r) = mb_r {
+                    if r != n { break 'rule_loop }
+                }
+            }
+        }
+    }
 }
 
 
