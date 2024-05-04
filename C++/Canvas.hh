@@ -34,9 +34,9 @@ class Canvas {
     sf::Vector2f BottomRight;
 
     Canvas(int size_x, int size_y);
-    void addText(string textName, string content, string fontDir,
+    sf::Text& addText(string textName, string content, string fontDir,
                  unsigned int size, sf::Vector2f pos, sf::Vector2f anchor);
-    void addSprite(string spriteName, string textureDir, sf::Vector2f pos,
+    sf::Sprite& addSprite(string spriteName, string textureDir, sf::Vector2f pos,
                    sf::Vector2f anchor, float scale = 1);
     void removeText(string textName);
     void removeSprite(string spriteText);
