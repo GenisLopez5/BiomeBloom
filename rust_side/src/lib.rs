@@ -2,6 +2,8 @@ use std::sync::Mutex;
 
 mod rules;
 use rules::*;
+mod position;
+use position::*;
 
 #[repr(C)]
 pub struct DAtom {
@@ -65,17 +67,17 @@ pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_
 
             let [tl, tc, tr, ll, rr, bl, bc, br] = 
                  find_neighbours(i, logic_buffer.as_mut_ptr(), buffer_width as usize, buffer_height as usize);
+            let curr_pos = Position::from_index(i, buffer_width as usize);
             match current_atom.entity_tag.try_into().unwrap() {
                 Entity::Nothing => {},
                 Entity::Ant => {
                     if bc == Entity::Nothing as u64 {
-                        let new_i = move_down(i, buffer_width as usize, buffer_height as usize);
+                        let new_i = curr_pos.move_down(buffer_height as usize).as_idx(buffer_width as usize);
                         new_logic_buffer[new_i] = logic_buffer[i];
                         new_logic_buffer[new_i].obsolete = true;
                         new_logic_buffer[i] = Atom::NULL;
                     }
                 },
-
             }
         }
     }
