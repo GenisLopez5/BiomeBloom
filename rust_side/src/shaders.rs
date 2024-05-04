@@ -1,12 +1,10 @@
-use std::collections::HashMap;
-
 use crate::*;
 
-pub struct AttachmentsForApply {
-    pub buffers: Vec<*const f64>,
-    pub old_logic_buffer: Box<Vec<Atom>>,
-    pub new_logic_buffer: Box<Vec<Atom>>,
-    pub mouse_pos: Position,
+pub struct AttachmentsForApply<'a> {
+    pub buffers: CFloatPVector,
+    pub old_logic_buffer: &'a mut Vec<Atom>,
+    pub new_logic_buffer: &'a mut Vec<Atom>,
+    pub mouse_pos: MouseInfo,
     pub width: usize,
     pub height: usize,
 }

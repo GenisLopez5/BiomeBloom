@@ -24,7 +24,7 @@ pub struct MouseInfo {
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
-pub struct CFloatVector {
+pub struct CFloatPVector {
     ptr: *mut f64,
     size: u64
 }
@@ -64,9 +64,10 @@ pub extern "C" fn compute(
     buffer_width: i64,
     buffer_height: i64,
     mouse: &MouseInfo,
-    shader_buffers: CVector,
+    shader_buffers: CFloatPVector,
 ) {
-    let (buffer_width, buffer_height): (usize, usize) = (buffer_width.try_into().unwrap(), buffer_height.try_into().unwrap());
+    let (buffer_width, buffer_height): (usize, usize) = 
+        (buffer_width.try_into().unwrap(), buffer_height.try_into().unwrap());
     let buffer_size = buffer_height * buffer_width;
 
     let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
@@ -85,11 +86,11 @@ pub extern "C" fn compute(
                 2 => tnt_shader,
                 3 => fire_shader,
             };
-            let attach = AttachmentsForApply {
-                buffers: todo!(),
-                old_logic_buffer: Box::new(*logic_buffer),
-                new_logic_buffer: Box::new(new_logic_buffer),
-                mouse_pos: todo!(),
+            let mut attach = AttachmentsForApply {
+                buffers: shader_buffers,
+                old_logic_buffer: &mut *logic_buffer,
+                new_logic_buffer: &mut new_logic_buffer,
+                mouse_pos: *mouse,
                 width:  buffer_width,
                 height: buffer_height
             };
