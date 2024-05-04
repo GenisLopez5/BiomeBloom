@@ -18,7 +18,7 @@ pub fn find_neighbours(index: usize, buffer: *const Atom, width: usize, height: 
             if i == 1 && j == 1 { continue; }
             let x1: usize = (x + width  - 1 + j) % width;
             let y1: usize = (y + height - 1 + i) % height;
-            let idx = Position::new(x1, y1, height).as_idx(width, height);
+            let idx = Position::new(x1, y1).as_idx(width, height);
             result[counter] = unsafe { (*buffer.add(idx)).entity_tag };
             counter += 1;
         }

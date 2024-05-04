@@ -6,7 +6,7 @@ pub struct Position {
 }
 
 impl Position {
-    pub fn new(x: usize, y: usize, height: usize) -> Self {
+    pub fn new(x: usize, y: usize) -> Self {
         Self { x, y }
     }
     pub fn from_index(val: usize, w: usize, h: usize) -> Self {
@@ -35,13 +35,13 @@ impl Position {
     }
     pub fn neighbours(&self, width: usize, height: usize) -> [Position; 8]{
         let mut counter = 0;
-        let mut result = [Position::new(0,0, height);8];
+        let mut result = [Position::new(0,0);8];
         for i in 0..3 {
             for j in 0..3 {
                 if i != 1 || j != 1 {
                     let x1: usize = (self.x + j + width - 1) % width;
                     let y1: usize = (self.y + i + height - 1) % height;
-                    result[counter] = Position::new(x1,y1, height);
+                    result[counter] = Position::new(x1,y1);
                     counter += 1;
                 }
             }
