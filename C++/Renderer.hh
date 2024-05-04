@@ -4,21 +4,17 @@
 #include <vector>
 
 using namespace std;
-using namespace sf;
 
-class Renderer{
-    private:
-        int render_buffer_size;
-        vector<Sprite> sprites;
-        vector<Texture> textures;
+class Renderer {
+private:
+  int render_buffer_size;
+  vector<sf::Sprite> sprites;
+  vector<sf::Texture> textures;
 
-        void set_new_texture(const DAtom& d_atom, Sprite& sprite);
-    public:
-        RenderWindow window;
-        DAtom* render_buffer;
+  void set_new_texture(const DAtom &d_atom, sf::Sprite &sprite);
 
 public:
-  RenderWindow window;
+  sf::RenderWindow window;
   DAtom *render_buffer;
 
   Renderer(int render_buffer_size);

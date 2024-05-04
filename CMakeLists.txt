@@ -19,6 +19,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
 
 add_custom_target(RUST_LIB ALL 
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/rust_side
-    COMMAND cargo build --release)
+    COMMAND cargo build --release
+    )
+
 
 

@@ -45,6 +45,7 @@ enum Entity {
 }
 
 fn init_logic_buffer(logic_buffer: &mut Vec<Atom>, buffer_size: u64) {
+    println!("Initializing ");
     for _ in 0..buffer_size as usize {
         logic_buffer.push(Atom::NULL)
     }
