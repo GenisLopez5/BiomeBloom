@@ -24,9 +24,12 @@ int main(int argc, char *argv[]) {
         }
 
         sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
-        sf::Mouse::Button lbutt = sf::Mouse::Button::Left;
-        bool leftPressed = sf::Mouse::isButtonPressed(lbutt);
+        mousePos.x = mousePos.x / SIZE;
+        mousePos.y = mousePos.y / SIZE;
+        cout << "mouse_x: " << mousePos.x << " mouse_y:" << mousePos.y << endl;
+        bool leftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
         MouseInfo mouse = (MouseInfo){mousePos.x, mousePos.y, leftPressed};
+
         compute(renderer.render_buffer, renderer.getCols(), renderer.getRows(),
                 mouse);
         renderer.render();
