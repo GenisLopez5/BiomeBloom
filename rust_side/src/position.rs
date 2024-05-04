@@ -7,15 +7,15 @@ pub struct Position {
 
 impl Position {
     pub fn new(x: usize, y: usize, height: usize) -> Self {
-        Self { x, y: height - y - 1 }
+        Self { x, y }
     }
     pub fn from_index(val: usize, w: usize, h: usize) -> Self {
         let x = val % w;
-        let y = h - val / w - 1;
+        let y = val / w;
         Self { x, y }
     }
     pub fn as_idx(&self, width: usize, height: usize) -> usize {
-        (height - self.y - 1) * width + self.x
+        self.y * width + self.x
     }
     pub fn move_down(&self, amount: usize, height: usize) -> Self {
         let y = (self.y + height - amount) % height;

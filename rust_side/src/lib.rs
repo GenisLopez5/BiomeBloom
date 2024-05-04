@@ -23,9 +23,8 @@ type EntityTag = u64;
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Atom {
-    entity_tag: u64,
+    entity_tag: u64, // Doubles as material
     priority: u8,
-    material: u64,
     obsolete: bool,
 }
 
@@ -33,7 +32,6 @@ impl Atom {
     const NULL: Self = Self {
         entity_tag: 0,
         priority: u8::MAX,
-        material: 0,
         obsolete: true,
     };
 }
@@ -57,7 +55,6 @@ fn init_logic_buffer(logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_h
     logic_buffer[ant_pos.as_idx(buffer_width, buffer_height)] = Atom {
         entity_tag: Entity::Ant as u64,
         priority: 1,
-        material: 1,
         obsolete: true,
     };
 }
