@@ -81,10 +81,11 @@ pub extern "C" fn compute(
             if current_atom.priority != p { continue }
 
             let shader = match current_atom.entity_tag.into() {
-                0 => nothing_shader,
+                0i64 => nothing_shader,
                 1 => ant_shader,
                 2 => tnt_shader,
                 3 => fire_shader,
+                t => unreachable!("Tag wasn't defined in the protocol in the GitHub Wiki: {t}"),
             };
             let mut attach = AttachmentsForApply {
                 buffers: shader_buffers,
