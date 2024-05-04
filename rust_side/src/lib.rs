@@ -25,7 +25,7 @@ pub struct MouseInfo {
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct CFloatPVector {
-    ptr: *mut f64,
+    ptr: *mut *mut f64,
     size: u64
 }
 
@@ -74,6 +74,11 @@ pub extern "C" fn compute(
     init_logic_buffer_if_needed(&mut *logic_buffer, buffer_width, buffer_height);
     let mut new_logic_buffer = logic_buffer.clone();
 
+
+    println!("Printing floats:");
+
+    let y = unsafe { **shader_buffers.ptr };
+    println!("{y}");
 
     for i in 0..buffer_size {
         for p in 0..=u8::MAX {
@@ -138,7 +143,7 @@ fn get_buffer_parity(drawing_buffer: *mut DAtom, buffer_width: usize, buffer_hei
 /// First time set up of logical buffer (initial state of simulation). All Atoms should be marked as obsolete, here
 fn init_logic_buffer_if_needed(logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_height: usize) {
     if !logic_buffer.is_empty() { return; }
-    println!("Initializing ");
+    printinfo("Initializing logic buffer");
     for _ in 0..buffer_width*buffer_height {
         logic_buffer.push(Atom::NULL)
     }
@@ -148,4 +153,9 @@ fn init_logic_buffer_if_needed(logic_buffer: &mut Vec<Atom>, buffer_width: usize
         priority: 1,
         obsolete: true,
     };
+    printinfo("Finished initializing logic buffer");
+}
+
+fn printinfo(s: &str) {
+    println!("[INFO (rs)]: {s}");
 }
