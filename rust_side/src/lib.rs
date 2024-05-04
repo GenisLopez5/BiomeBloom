@@ -46,6 +46,7 @@ enum Entity {
     Ant,
     Tnt,
     Fire,
+    Water,
 }
 
 // Internal buffer, in case we need to add things like Lifetimes or whatever
