@@ -88,7 +88,7 @@ pub extern "C" fn compute(
                 Entity::Ant => {
                     if bc == Entity::Nothing as u64 {
                         let new_i = curr_pos
-                            .move_down(buffer_height as usize)
+                            .move_down(1, buffer_height as usize)
                             .as_idx(buffer_width as usize);
                         new_logic_buffer[new_i] = logic_buffer[i];
                         new_logic_buffer[new_i].obsolete = true;
@@ -100,11 +100,10 @@ pub extern "C" fn compute(
                         .iter()
                         .any(|&p| p == Entity::Ant as u64)
                     {
-                        for i in 0..3 {
-                            for j in 0..3 {
-                                //                                new_logic_buffer[i]
-                            }
+                        for neigh in curr_pos.neighbours() {
+                            new_logic_buffer[neigh.as_idx(buffer_width as usize)] = Atom::NULL;
                         }
+                        new_logic_buffer[curr_pos.as_idx(buffer_width as usize)] = Atom::NULL;
                     }
                 }
             }
@@ -114,7 +113,9 @@ pub extern "C" fn compute(
     // Update drawing buffer with the logic one
     for i in 0..buffer_size as usize {
         unsafe {
-            *drawing_buffer.add(i) = new_logic_buffer[i].into();
+            // For debugging:
+            *drawing_buffer.add(i) = DAtom { material: (i % 2) as u64, obsolete: true };
+            //*drawing_buffer.add(i) = new_logic_buffer[i].into();
         }
     }
 }

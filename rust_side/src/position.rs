@@ -15,20 +15,20 @@ impl Position {
     pub fn as_idx(&self, width: usize) -> usize {
         self.y * width + self.x
     }
-    pub fn move_down(&self, height: usize) -> Self {
-        let y = (self.y + height + 1) % height;
+    pub fn move_down(&self, amount: usize, height: usize) -> Self {
+        let y = (self.y + height + amount) % height;
         Self { y, ..*self }
     }
-    pub fn move_up(&self, height: usize) -> Self {
-        let y = (self.y + height - 1) % height;
+    pub fn move_up(&self, amount: usize, height: usize) -> Self {
+        let y = (self.y + height - amount) % height;
         Self { y, ..*self }
     }
-    pub fn move_right(&self, width: usize) -> Self {
-        let x = (self.x + width + 1) % width;
+    pub fn move_right(&self, amount: usize, width: usize) -> Self {
+        let x = (self.x + width + amount) % width;
         Self { x, ..*self }
     }
-    pub fn move_left(&self, width: usize) -> Self {
-        let x = (self.x + width - 1) % width;
+    pub fn move_left(&self, amount: usize, width: usize) -> Self {
+        let x = (self.x + width - amount) % width;
         Self { x, ..*self }
     }
 }
