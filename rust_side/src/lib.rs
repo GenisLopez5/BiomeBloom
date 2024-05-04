@@ -69,7 +69,7 @@ pub extern "C" fn compute(
     init_logic_buffer_if_needed(&mut *logic_buffer, buffer_width, buffer_height);
     let mut new_logic_buffer = logic_buffer.clone();
 
-    println!("{:?}bbbb", shader_buffers);
+    println!("Pointer of shared is: {:?}", shader_buffers);
 
     let y = unsafe { *shader_buffers };
     println!("{y}");
