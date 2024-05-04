@@ -2,8 +2,8 @@
 #include <cstdint>
 
 struct MouseInfo {
-    int posx;
-    int posy;
-    int selected_tag;
+    int64_t posx;
+    int64_t posy;
+    int64_t selected_tag;
     bool clicked;
 };
