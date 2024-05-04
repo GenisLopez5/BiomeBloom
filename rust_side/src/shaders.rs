@@ -158,18 +158,12 @@ fn find_neighbours_of_buffer(
     width: usize,
     height: usize
 ) -> [i64; 8] {
+    let neighbor_posses = pos.neighbours(width, height);
     let delta = buffer_idx * width * height;
-    let mut counter = 0;
     let mut result = [0; 8];
-    for i in 0..3 {
-        for j in 0..3 {
-            if i == 1 && j == 1 { continue; }
-            let x1: usize = (pos.x + width  - 1 + j) % width;
-            let y1: usize = (pos.y + height - 1 + i) % height;
-            let idx = Position::new(x1, y1).as_idx(width, height) + delta;
-            result[counter] = unsafe { *buffers.add(idx) };
-            counter += 1;
-        }
+    for (i, p) in neighbor_posses.iter().enumerate() {
+        let idx = p.as_idx(width, height) + delta;
+        result[i] = unsafe { *buffers.add(idx) };
     }
     result
 
