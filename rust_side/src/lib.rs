@@ -39,10 +39,12 @@ impl Atom {
 }
 
 #[repr(u64)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 enum Entity {
     Nothing,
     Ant,
     Tnt,
+    Fire
 }
 
 /// First time set up of logical buffer (initial state of simulation). All Atoms should be marked as obsolete, here
