@@ -13,6 +13,7 @@ pub struct DAtom {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy, Debug)]
 pub struct Mouse {
     posx: i64,
     posy: i64,
@@ -78,7 +79,10 @@ pub extern "C" fn compute(
         init_logic_buffer(&mut *logic_buffer, buffer_width, buffer_height);
     }
 
-    if mouse.clicked {
+    println!("Click is: {}", mouse.clicked);
+    dbg!(mouse);
+    if mouse.clicked && mouse.posx >= 0_i64 && mouse.posy >= 0_i64 {
+        dbg!(mouse);
         let pos = Position::new(mouse.posx as usize, mouse.posy as usize);
         logic_buffer[pos.as_idx(buffer_width, buffer_height)] = Atom {
                 entity_tag: mouse.selected_tag,

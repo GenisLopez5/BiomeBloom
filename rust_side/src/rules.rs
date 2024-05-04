@@ -95,13 +95,10 @@ pub fn apply_rules(logic_buffer: &Vec<Atom>, new_buf: &mut Vec<Atom>, index: usi
     let rules = rules();
     let rules = rules.get(&logic_buffer[index].entity_tag);
     if let Some(rules) = rules {
-        println!("Checking the rules for index: {index}");
         let neighs = find_neighbours( index, logic_buffer.as_ptr(), width, height);
 
         for rule in rules {
             // Does rule apply?
-            println!("Checking for rule: {:?}", rule);
-            println!("Comparing against: {:?}", neighs);
             if !neighs.into_iter().zip(rule.0)
                 .filter(|(_n, mb_r)| mb_r.is_some())
                 .map(|(n, mb_r)| (n, mb_r.unwrap()))
@@ -109,7 +106,6 @@ pub fn apply_rules(logic_buffer: &Vec<Atom>, new_buf: &mut Vec<Atom>, index: usi
 
             // If we're here, the rule does apply
             let current_pos = Position::from_index(index, width, height);
-            println!("We're applying a rule for {current_pos:?}");
             let new_atoms = rule.1;
             let mut cnt = 0;
             for i in 0..3 {
@@ -118,19 +114,14 @@ pub fn apply_rules(logic_buffer: &Vec<Atom>, new_buf: &mut Vec<Atom>, index: usi
                         x:  (current_pos.x + j + width - 1) % width,
                         y:  (current_pos.y + i + height - 1) % height,
                     };
-                    println!("Checking if {cnt} should be updated");
                     if let Some(new_atom) = new_atoms[cnt] {
-                        println!("{cnt} should be updated (at {new_pos:?}), updating to {new_atom}");
-                        println!("Before: {:?}", new_buf[new_pos.as_idx(width, height)]);
                         new_buf[new_pos.as_idx(width, height)].entity_tag = new_atom;
                         new_buf[new_pos.as_idx(width, height)].obsolete = true;
                         new_buf[new_pos.as_idx(width, height)].priority = 2;
-                        println!("After (p): {:?}", new_buf[new_pos.as_idx(width, height)]);
                     }
                     cnt += 1;
                 }
             }
-            println!("Finished applying rule");
         }
     }
 }
