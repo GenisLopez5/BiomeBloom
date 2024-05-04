@@ -2,6 +2,8 @@
 #include "Renderer.hh"
 #include "rust_functions.h"
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <ios>
 #include <iostream>
 
 using namespace std;
@@ -20,8 +22,12 @@ int main(int argc, char *argv[]) {
         if (event.type == sf::Event::Closed) {
             renderer.window.close();
         }
-        MouseInfo mouse = (MouseInfo){0, 0, false};
-        compute(renderer.render_buffer, renderer.getRows(), renderer.getCols(),
+
+        sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
+        sf::Mouse::Button lbutt = sf::Mouse::Button::Left;
+        bool leftPressed = sf::Mouse::isButtonPressed(lbutt);
+        MouseInfo mouse = (MouseInfo){mousePos.x, mousePos.y, leftPressed};
+        compute(renderer.render_buffer, renderer.getCols(), renderer.getRows(),
                 mouse);
         renderer.render();
     }
