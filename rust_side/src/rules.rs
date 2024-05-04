@@ -1,31 +1,6 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, hash::Hash};
 
 use crate::*;
-/// Pre: Index refers to element in grid
-/// Post: Eight element array of the eight neighbours (toroidal geometry) that surrounds the pixel at the given index
-/// The indexes of the array look like:
-/// ```txt
-/// 012
-/// 3X4
-/// 567
-/// ```
-pub fn find_neighbours(index: usize, buffer: *const Atom, width: usize, height: usize) -> [EntityTag; 8] {
-    let Position {x, y} = Position::from_index(index, width, height);
-    let mut counter = 0;
-    let mut result = [0; 8];
-    for i in 0..3 {
-        for j in 0..3 {
-            if i == 1 && j == 1 { continue; }
-            let x1: usize = (x + width  - 1 + j) % width;
-            let y1: usize = (y + height - 1 + i) % height;
-            let idx = Position::new(x1, y1).as_idx(width, height);
-            result[counter] = unsafe { (*buffer.add(idx)).entity_tag };
-            counter += 1;
-        }
-    }
-    result
-}
-
 impl From<i64> for Entity {
     fn from(value: i64) -> Self {
         let x: Entity = unsafe { std::mem::transmute(value as u64) }; // Assumes it's in range
@@ -52,7 +27,7 @@ impl From<Atom> for DAtom {
 /// Map from Entity -> Vec<(Neighbours, [Option<Entity>; 9])>
 /// Maps entity with its (needed) neighbours to its (maybe) changing surrounding neighbours
 /// NOTE: They are both reversed!
-fn rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>; 9])>> {
+fn primitive_rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>; 9])>> {
     use Entity as E;
     HashMap::from([
         (E::Ant as i64, 
@@ -92,7 +67,7 @@ fn rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>
 
 // Rules abstrction
 pub fn apply_rules(logic_buffer: &Vec<Atom>, new_buf: &mut Vec<Atom>, index: usize, width: usize, height: usize) {
-    let rules = rules();
+    let rules = primitive_rules();
     let rules = rules.get(&logic_buffer[index].entity_tag);
     if let Some(rules) = rules {
         let neighs = find_neighbours( index, logic_buffer.as_ptr(), width, height);
@@ -127,7 +102,47 @@ pub fn apply_rules(logic_buffer: &Vec<Atom>, new_buf: &mut Vec<Atom>, index: usi
 }
 
 
+fn neighbour_count(buffer: &[Atom], index: usize) -> HashMap<EntityTag, usize> {
+    let mut result = HashMap::new();
+    for i in 0..3 {
+        for j in 0..3 {
+            if i == 1 && j == 1 { continue; }
+            let current = buffer[index];
+            match result.get_mut(&current.entity_tag) {
+                Some(v) => *v += 1,
+                None => { result.insert(current.entity_tag, 1); },
+            }
+        }
+    }
 
+    result
+
+}
+
+/// Pre: Index refers to element in grid
+/// Post: Eight element array of the eight neighbours (toroidal geometry) that surrounds the pixel at the given index
+/// The indexes of the array look like:
+/// ```txt
+/// 012
+/// 3X4
+/// 567
+/// ```
+pub fn find_neighbours(index: usize, buffer: *const Atom, width: usize, height: usize) -> [EntityTag; 8] {
+    let Position {x, y} = Position::from_index(index, width, height);
+    let mut counter = 0;
+    let mut result = [0; 8];
+    for i in 0..3 {
+        for j in 0..3 {
+            if i == 1 && j == 1 { continue; }
+            let x1: usize = (x + width  - 1 + j) % width;
+            let y1: usize = (y + height - 1 + i) % height;
+            let idx = Position::new(x1, y1).as_idx(width, height);
+            result[counter] = unsafe { (*buffer.add(idx)).entity_tag };
+            counter += 1;
+        }
+    }
+    result
+}
 
 
 #[test]

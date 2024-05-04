@@ -86,6 +86,7 @@ pub extern "C" fn update_mouse(mouse: Mouse, drawing_buffer: *mut DAtom, buffer_
         dbg!(mouse);
         let pos = Position::new(mouse.posx as usize, mouse.posy as usize);
         let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
+        init_logic_buffer_if_needed(&mut *logic_buffer, buffer_width, buffer_height);
         logic_buffer[pos.as_idx(buffer_width, buffer_height)] = Atom {
                 entity_tag: mouse.selected_tag,
                 priority: 2,
