@@ -6,6 +6,7 @@ mod position;
 use position::*;
 
 #[repr(C)]
+#[derive(Clone, Copy, Debug)]
 pub struct DAtom {
     material: u64,
     obsolete: bool,
@@ -103,10 +104,6 @@ pub extern "C" fn compute(
                         new_logic_buffer[new_i] = logic_buffer[i];
                         new_logic_buffer[new_i].obsolete = true;
                         new_logic_buffer[i] = Atom::NULL;
-                        println!("Moved ant from {i} ({:?}) to {new_i} ({:?})", 
-                            Position::from_index(i, buffer_width, buffer_height),
-                            Position::from_index(new_i, buffer_width, buffer_height),
-                        );
                     }
                 }
                 Entity::Tnt => {
@@ -129,6 +126,12 @@ pub extern "C" fn compute(
     for i in 0..buffer_size {
         unsafe {
             *drawing_buffer.add(i) = logic_buffer[i].into();
+            logic_buffer[i].obsolete = false;
+        }
+    }
+    for i in 0..buffer_size {
+        if unsafe {*drawing_buffer.add(i)}.material == Entity::Ant as u64 {
+            println!("Any at i = {i} ({:?})", Position::from_index(i, buffer_width, buffer_height));
         }
     }
 }
