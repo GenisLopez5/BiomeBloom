@@ -77,8 +77,8 @@ pub extern "C" fn compute(
 
     println!("Printing floats:");
 
-    let y = unsafe { **shader_buffers.ptr };
-    println!("{y}");
+    //let y = unsafe { **shader_buffers.ptr };
+    //println!("{y}");
 
     for i in 0..buffer_size {
         for p in 0..=u8::MAX {

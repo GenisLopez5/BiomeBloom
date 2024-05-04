@@ -28,7 +28,7 @@ sf::Text& Canvas::addText(string textName, string content, string fontDir, unsig
     Setup();
     return text;
 }
-sf::Sprite Canvas::addSprite(string spriteName, string textureDir, sf::Vector2f pos, sf::Vector2f anchor, float scale = 1)
+sf::Sprite Canvas::addSprite(string spriteName, string textureDir, sf::Vector2f pos, sf::Vector2f anchor, float scale)
 {
     sf::Texture t;
     t.loadFromFile(textureDir);
