@@ -20,11 +20,9 @@ int main(int argc, char *argv[]) {
         if (event.type == sf::Event::Closed) {
             renderer.window.close();
         }
-        cout << "rendering frame" << endl;
         MouseInfo mouse = (MouseInfo){0, 0, false};
         compute(renderer.render_buffer, renderer.getRows(), renderer.getCols(),
                 mouse);
-        cout << "ending coumpute" << endl;
         renderer.render();
     }
 }
