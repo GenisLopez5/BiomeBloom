@@ -95,11 +95,13 @@ pub fn ant_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), 
 }
 
 pub fn tnt_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
-    todo!()
+    printinfo("TRIED TO APPLY TNT SHADER, BUT NOT YET IMPLEMENTED");
+    Ok(())
 }
 
 pub fn fire_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
-    todo!()
+    printinfo("TRIED TO APPLY FIRE SHADER, BUT NOT YET IMPLEMENTED");
+    Ok(())
 }
 
 pub fn water_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
@@ -175,6 +177,10 @@ pub fn water_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<()
     Ok(())
 }
 
+pub fn missing_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
+    printinfo("Tag wasn't defined in the protocol in the GitHub Wiki:");
+    Ok(())
+}
 
 fn find_neighbours_of_buffer(
     buffer_idx: usize,
