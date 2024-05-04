@@ -2,6 +2,6 @@
 #include <cstdint>
 
 struct DAtom {
-  int material;
+  int64_t material;
   bool obsolete;
 };
