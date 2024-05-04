@@ -40,7 +40,8 @@ impl Atom {
 #[repr(u64)]
 enum Entity {
     Nothing,
-    Ant
+    Ant,
+    Tnt
 }
 
 fn init_logic_buffer(logic_buffer: &mut Vec<Atom>, buffer_size: u64) {
@@ -78,6 +79,14 @@ pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_
                         new_logic_buffer[i] = Atom::NULL;
                     }
                 },
+                Entity::Tnt => {
+                    if [tl, tc, tr, ll, rr, bl, bc, br].iter().any(|&p| p == Entity::Ant as u64) {
+                        for i in 0..3 { for j in 0..3 {
+                            new_logic_buffer[i]
+                        }}
+                    }
+
+                }
             }
         }
     }
