@@ -9,7 +9,7 @@ use crate::*;
 /// 3X4
 /// 567
 /// ```
-pub fn find_neighbours(index: usize, buffer: *mut Atom, width: usize, height: usize) -> [EntityTag; 8] {
+pub fn find_neighbours(index: usize, buffer: *const Atom, width: usize, height: usize) -> [EntityTag; 8] {
     let Position {x, y} = Position::from_index(index, width, height);
     let mut counter = 0;
     let mut result = [0; 8];
@@ -57,10 +57,10 @@ fn rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>
     HashMap::from([
         (E::Ant as u64, 
             vec![(
-                [None,                    None, None,
-                 None,                    None,
+                [None,              None,       None,
+                 None,                          None,
                  None, Some(E::Nothing.into()), None],
-                [None,                    None, None, 
+                [None,          None,           None, 
                  None, Some(E::Nothing.into()), None,
                  None, Some(E::Ant.into()),     None])
             ]
@@ -81,24 +81,46 @@ fn rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>
 }
 
 // Rules abstrction
-pub fn apply_rules(logic_buffer: &mut Vec<Atom>, new_buf: &mut Vec<Atom>, index: usize, buffer_width: usize, buffer_height: usize) {
+pub fn apply_rules(logic_buffer: &mut Vec<Atom>, new_buf: &mut Vec<Atom>, index: usize, width: usize, height: usize) {
     let rules = rules();
     let rules = rules.get(&logic_buffer[index].entity_tag);
     if let Some(rules) = rules {
-        //let [tl, tc, tr, ll, rr, bl, bc, br] = find_neighbours(
-        let neighs = find_neighbours(
-            index,
-            logic_buffer.as_mut_ptr(),
-            buffer_width,
-            buffer_height
-        );
-        'rule_loop: for rule in rules {
+        println!("Checking the rules for index: {index}");
+        //let neighs = find_neighbours( index, logic_buffer.as_ptr(), width, height);
+
+        for rule in rules {
             // Does rule apply?
-            for (n, mb_r) in neighs.into_iter().zip(rule.0) {
-                if let Some(r) = mb_r {
-                    if r != n { break 'rule_loop }
+            println!("Checking for rule: {:?}", rule);
+            //if !neighs.into_iter().zip(rule.0)
+            //    .filter(|(_n, mb_r)| mb_r.is_some())
+            //    .map(|(n, mb_r)| (n, mb_r.unwrap()))
+            //    .all(|(n, r)| n == r) { continue; }
+
+            // If we're here, the rule does apply
+            let current_pos = Position::from_index(index, width, height);
+            println!("We're applying a rule for {current_pos:?}");
+            let new_atoms = rule.1;
+            let mut cnt = 0;
+            for i in 0..3 {
+                for j in 0..3 {
+                    let new_pos = Position {
+                        x:  (current_pos.x + j + width - 1) % width,
+                        y:  (current_pos.y + i + height - 1) % height,
+                    };
+                    println!("Checking if {cnt} should be updated");
+                    if let Some(new_atom) = new_atoms[cnt] {
+                        println!("{cnt} should be updated (at {new_pos:?}), updating to {new_atom}");
+                        println!("Before: {:?}", new_buf[new_pos.as_idx(width, height)]);
+                        new_buf[new_pos.as_idx(width, height)].entity_tag = new_atom;
+                        new_buf[new_pos.as_idx(width, height)].material = new_atom;
+                        new_buf[new_pos.as_idx(width, height)].obsolete = true;
+                        new_buf[new_pos.as_idx(width, height)].priority = 2;
+                        println!("After (p): {:?}", new_buf[new_pos.as_idx(width, height)]);
+                    }
+                    cnt += 1;
                 }
             }
+            println!("Finished applying rule");
         }
     }
 }

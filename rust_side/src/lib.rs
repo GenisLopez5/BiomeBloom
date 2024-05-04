@@ -21,7 +21,7 @@ pub struct Mouse {
 
 type EntityTag = u64;
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Atom {
     entity_tag: u64,
     priority: u8,
@@ -83,28 +83,20 @@ pub extern "C" fn compute(
     let mut new_logic_buffer = logic_buffer.clone();
 
     for i in 0..buffer_size {
-        for p in 0..u8::MAX {
+        for p in 0..=u8::MAX {
             let current_atom = logic_buffer[i];
-            if current_atom.priority != p {
-                continue;
-            }
+            if current_atom.priority != p { continue }
 
-            let curr_pos = Position::from_index(i, buffer_width, buffer_height);
             apply_rules(&mut logic_buffer, &mut new_logic_buffer, i, buffer_width, buffer_height);
         }
     }
+    println!("Finished calculating frame");
 
     *logic_buffer = new_logic_buffer;
     // Update drawing buffer with the logic one
     for i in 0..buffer_size {
         unsafe {
             *drawing_buffer.add(i) = logic_buffer[i].into();
-            logic_buffer[i].obsolete = false;
-        }
-    }
-    for i in 0..buffer_size {
-        if unsafe {*drawing_buffer.add(i)}.material == Entity::Ant as u64 {
-            println!("Any at i = {i} ({:?})", Position::from_index(i, buffer_width, buffer_height));
         }
     }
 }
