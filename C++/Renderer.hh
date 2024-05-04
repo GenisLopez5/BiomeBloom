@@ -1,23 +1,25 @@
 #include "DAtom.hh"
 #include "SFML/Graphics.hpp"
-#include <iostream>
 #include <vector>
 
 using namespace std;
 
 class Renderer {
-private:
-  int render_buffer_size;
-  vector<sf::Sprite> sprites;
-  vector<sf::Texture> textures;
+  private:
+    int rows;
+    int cols;
+    vector<sf::Sprite> sprites;
+    vector<sf::Texture> textures;
 
-  void set_new_texture(const DAtom &d_atom, sf::Sprite &sprite);
+    void set_new_texture(const DAtom &d_atom, sf::Sprite &sprite);
 
-public:
-  sf::RenderWindow window;
-  DAtom *render_buffer;
+  public:
+    sf::RenderWindow window;
+    DAtom *render_buffer;
 
-  Renderer(int render_buffer_size);
+    Renderer(int atom_size);
 
-  void render();
+    void render();
+    int getRows() const;
+    int getCols() const;
 };

@@ -1,20 +1,30 @@
 #include "MouseInfo.hh"
 #include "Renderer.hh"
 #include "rust_functions.h"
+#include <SFML/Window/Event.hpp>
+#include <iostream>
 
 using namespace std;
 
+const int SIZE = 20;
+
 int main(int argc, char *argv[]) {
-  int size_x = 5;
-  int size_y = 6;
 
-  Renderer renderer(size_x * size_y);
+    Renderer renderer(SIZE);
 
-  while (renderer.window.isOpen()) {
-    cout << "rendering frame" << endl;
-    MouseInfo mouse = (MouseInfo){0, 0, false};
-    compute(renderer.render_buffer, size_x, size_y, mouse);
-    cout << "ending coumpute" << endl;
-    renderer.render();
-  }
+    sf::Event event;
+
+    while (renderer.window.isOpen()) {
+
+        renderer.window.pollEvent(event);
+        if (event.type == sf::Event::Closed) {
+            renderer.window.close();
+        }
+        cout << "rendering frame" << endl;
+        MouseInfo mouse = (MouseInfo){0, 0, false};
+        compute(renderer.render_buffer, renderer.getRows(), renderer.getCols(),
+                mouse);
+        cout << "ending coumpute" << endl;
+        renderer.render();
+    }
 }

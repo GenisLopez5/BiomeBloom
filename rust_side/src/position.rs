@@ -1,7 +1,6 @@
-
 pub struct Position {
     x: usize,
-    y: usize
+    y: usize,
 }
 
 impl Position {
@@ -14,22 +13,23 @@ impl Position {
         Self { x, y }
     }
     pub fn as_idx(&self, width: usize) -> usize {
-        self.y*width + self.x
+        self.y * width + self.x
     }
     pub fn move_down(&self, height: usize) -> Self {
         let y = (self.y + height + 1) % height;
-        Self { y, ..*self}
+        Self { y, ..*self }
     }
     pub fn move_up(&self, height: usize) -> Self {
         let y = (self.y + height - 1) % height;
-        Self { y, ..*self}
+        Self { y, ..*self }
     }
     pub fn move_right(&self, width: usize) -> Self {
         let x = (self.x + width + 1) % width;
-        Self { x, ..*self}
+        Self { x, ..*self }
     }
     pub fn move_left(&self, width: usize) -> Self {
         let x = (self.x + width - 1) % width;
-        Self { x, ..*self}
+        Self { x, ..*self }
     }
 }
+
