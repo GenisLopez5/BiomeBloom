@@ -63,12 +63,12 @@ pub extern "C" fn compute(drawing_buffer: *mut DAtom, buffer_width: u64, buffer_
             let current_atom = logic_buffer[i];
             if current_atom.priority != p { continue; }
 
-            let [tl, tc, tr, ll, rr, bl, bb, br] = 
+            let [tl, tc, tr, ll, rr, bl, bc, br] = 
                  find_neighbours(i, logic_buffer.as_mut_ptr(), buffer_width as usize, buffer_height as usize);
             match current_atom.entity_tag.try_into().unwrap() {
                 Entity::Nothing => {},
                 Entity::Ant => {
-                    if bb == Entity::Nothing as u64 {
+                    if bc == Entity::Nothing as u64 {
                         let new_i = move_down(i, buffer_width as usize, buffer_height as usize);
                         new_logic_buffer[new_i] = logic_buffer[i];
                         new_logic_buffer[new_i].obsolete = true;
