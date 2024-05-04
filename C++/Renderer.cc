@@ -5,6 +5,8 @@
 Renderer::Renderer(int atom_size)
     : textures(2), window(sf::VideoMode(600, 800), "BiomeBloom") {
 
+    window.setFramerateLimit(1);
+
     rows = window.getSize().y / atom_size;
     cols = window.getSize().x / atom_size;
 
