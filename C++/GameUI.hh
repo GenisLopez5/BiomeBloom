@@ -10,8 +10,6 @@ class GameUI : public Canvas {
     Sprite _PaletteImg;
     Sprite _PaletteSelectedImg;
 
-    void Setup() override;
-
   public:
-    GameUI(int size_x, int size_y) : Canvas(size_x, size_y) {}
+    GameUI(int size_x, int size_y);
 };

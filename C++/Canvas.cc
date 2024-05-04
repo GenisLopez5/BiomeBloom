@@ -25,7 +25,6 @@ sf::Text &Canvas::addText(string textName, string content, string fontDir,
     // text.setOrigin(sf::Vector2f(anchor.x * text.))
     text.setPosition(pos);
 
-    Setup();
     return text;
 }
 sf::Sprite Canvas::addSprite(string spriteName, string textureDir,
