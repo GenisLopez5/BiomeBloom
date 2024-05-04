@@ -44,11 +44,19 @@ enum Entity {
     Tnt,
 }
 
-fn init_logic_buffer(logic_buffer: &mut Vec<Atom>, buffer_size: usize) {
+/// First time set up of logical buffer (initial state of simulation). All Atoms should be marked as obsolete, here
+fn init_logic_buffer(logic_buffer: &mut Vec<Atom>, buffer_width: usize, buffer_height: usize) {
     println!("Initializing ");
-    for _ in 0..buffer_size {
+    for _ in 0..buffer_width*buffer_height {
         logic_buffer.push(Atom::NULL)
     }
+    let ant_pos = Position::new(buffer_width / 2, buffer_height / 2, buffer_height);
+    logic_buffer[ant_pos.as_idx(buffer_width, buffer_height)] = Atom {
+        entity_tag: Entity::Ant as u64,
+        priority: 1,
+        material: 1,
+        obsolete: true,
+    };
 }
 
 // Internal buffer, in case we need to add things like Lifetimes or whatever
@@ -66,7 +74,7 @@ pub extern "C" fn compute(
     let buffer_size = buffer_height * buffer_width;
     let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
     if logic_buffer.is_empty() {
-        init_logic_buffer(&mut *logic_buffer, buffer_size)
+        init_logic_buffer(&mut *logic_buffer, buffer_width, buffer_height);
     }
 
     let mut new_logic_buffer = logic_buffer.clone();
@@ -84,17 +92,21 @@ pub extern "C" fn compute(
                 buffer_width,
                 buffer_height
             );
-            let curr_pos = Position::from_index(i, buffer_width);
+            let curr_pos = Position::from_index(i, buffer_width, buffer_height);
             match current_atom.entity_tag.try_into().unwrap() {
                 Entity::Nothing => {}
                 Entity::Ant => {
                     if bc == Entity::Nothing as u64 {
                         let new_i = curr_pos
                             .move_down(1, buffer_height)
-                            .as_idx(buffer_width);
+                            .as_idx(buffer_width, buffer_height);
                         new_logic_buffer[new_i] = logic_buffer[i];
                         new_logic_buffer[new_i].obsolete = true;
                         new_logic_buffer[i] = Atom::NULL;
+                        println!("Moved ant from {i} ({:?}) to {new_i} ({:?})", 
+                            Position::from_index(i, buffer_width, buffer_height),
+                            Position::from_index(new_i, buffer_width, buffer_height),
+                        );
                     }
                 }
                 Entity::Tnt => {
@@ -103,21 +115,20 @@ pub extern "C" fn compute(
                         .any(|&p| p == Entity::Ant as u64)
                     {
                         for neigh in curr_pos.neighbours(buffer_width, buffer_height) {
-                            new_logic_buffer[neigh.as_idx(buffer_width)] = Atom::NULL;
+                            new_logic_buffer[neigh.as_idx(buffer_width, buffer_height)] = Atom::NULL;
                         }
-                        new_logic_buffer[curr_pos.as_idx(buffer_width)] = Atom::NULL;
+                        new_logic_buffer[curr_pos.as_idx(buffer_width, buffer_height)] = Atom::NULL;
                     }
                 }
             }
         }
     }
 
+    *logic_buffer = new_logic_buffer;
     // Update drawing buffer with the logic one
     for i in 0..buffer_size {
         unsafe {
-            // For debugging:
-            *drawing_buffer.add(i) = DAtom { material: (i % 2) as u64, obsolete: true };
-            //*drawing_buffer.add(i) = new_logic_buffer[i].into();
+            *drawing_buffer.add(i) = logic_buffer[i].into();
         }
     }
 }
