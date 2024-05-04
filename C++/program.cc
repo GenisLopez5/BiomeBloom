@@ -1,3 +1,4 @@
+#include "MouseInfo.hh"
 #include "Renderer.hh"
 #include "rust_functions.h"
 
@@ -11,7 +12,8 @@ int main(int argc, char *argv[]) {
 
   while (renderer.window.isOpen()) {
     cout << "rendering frame" << endl;
-    compute(renderer.render_buffer, size_x, size_y);
+    MouseInfo mouse = (MouseInfo){0, 0, false};
+    compute(renderer.render_buffer, size_x, size_y, mouse);
     cout << "ending coumpute" << endl;
     renderer.render();
   }
