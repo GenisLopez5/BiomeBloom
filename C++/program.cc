@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
          ++i) {
         int row = i / renderer.getCols();
         int col = i % renderer.getCols();
-        floatFields[i] = abs(col - renderer.getCols() / 2);
+        floatFields[i] = abs(col - renderer.getCols() / 2) + abs(row - renderer.getRows() / 2);
     }
     // TODO: Inicialitzeu els valors amb un funció continua aquí
 

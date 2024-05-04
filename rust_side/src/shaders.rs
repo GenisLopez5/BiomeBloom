@@ -110,18 +110,13 @@ pub fn water_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<()
         attach.width,
         attach.height
     );
-    println!("At position {:?}, the neighbours are: {:?}", Position::from_index(index, attach.width, attach.height), water_neighs);
-    let index_of_min: usize = water_neighs
+    let current_height = unsafe { *attach.buffers.add(index + 0) };
+    let indexes_of_lower: Vec<usize> = water_neighs
         .iter()
         .enumerate()
-        .min_by(|(_, a), (_, b)| a.cmp(b))
+        .filter(|(i, &h)| h < current_height)
         .map(|(index, _)| index)
-        .unwrap();
-    let min_height = water_neighs[index_of_min];
-    let indexes: Vec<usize> = water_neighs.iter()
-        .enumerate()
-        .filter(|(_, &h)| h == min_height)
-        .map(|(i, _)| i).collect();
+        .collect();
 
     let mut tl_rule: Rule = ([None; 8], [None; 9]).into();
     let mut tr_rule: Rule = ([None; 8], [None; 9]).into();
@@ -152,7 +147,7 @@ pub fn water_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<()
     right_rule.0.1[4] = Some(Entity::Water.into());
     down_rule.0.1[4]  = Some(Entity::Water.into());
 
-    for indextobewater in indexes {
+    for indextobewater in indexes_of_lower {
         match indextobewater {
             0 => apply_rule(&tl_rule, &attach.old_logic_buffer, attach.new_logic_buffer, index, attach.width, attach.height),
             1 => apply_rule(&top_rule, &attach.old_logic_buffer, attach.new_logic_buffer, index, attach.width, attach.height),

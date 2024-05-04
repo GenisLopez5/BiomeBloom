@@ -47,6 +47,8 @@ enum Entity {
     Tnt,
     Fire,
     Water,
+    Lava,
+    Rock
 }
 
 // Internal buffer, in case we need to add things like Lifetimes or whatever
