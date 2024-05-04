@@ -3,12 +3,12 @@ use std::collections::HashMap;
 use crate::*;
 
 pub struct AttachmentsForApply {
-    primitive_rules: HashMap<EntityTag, Vec<Rule>>,
-    buffers: Vec<*const f64>,
-    logic_buffer: Box<Vec<Atom>>,
-    mouse_pos: Position,
-    width: usize,
-    height: usize,
+    pub buffers: Vec<*const f64>,
+    pub old_logic_buffer: Box<Vec<Atom>>,
+    pub new_logic_buffer: Box<Vec<Atom>>,
+    pub mouse_pos: Position,
+    pub width: usize,
+    pub height: usize,
 }
 pub struct Rule(([Option<EntityTag>; 8] ,[Option<EntityTag>; 9]));
 
@@ -53,8 +53,45 @@ pub fn apply_rule(rule: &Rule, logic_buffer: &Vec<Atom>, new_buf: &mut Vec<Atom>
 
 
 // ------------- Shaders --------------
-pub fn ant_shader(attach: &AttachmentsForApply) -> Result<(), ()> {
+pub fn nothing_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
+    Ok(())
+}
 
+pub fn ant_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
+    use Entity as E;
+    let walk_right: Rule = 
+                ([None,          None,           None,
+                 None,                          None,
+                 None, Some(E::Nothing.into()), None],
+
+                [None,          None,           None,
+                 None, Some(E::Nothing.into()), None,
+                 None, Some(E::Ant.into()),     None]).into();
+
+    let walk_down: Rule = 
+                ([None,         None,             None,
+                 None,                   Some(E::Nothing.into()),
+                 None,          None,             None],
+
+                [None,          None,               None,
+                 None, Some(E::Nothing.into()), Some(E::Ant.into()),
+                 None,          None,                None]).into();
+
+    apply_rule(&walk_right,
+        &mut *attach.old_logic_buffer,
+        &mut attach.new_logic_buffer,
+        index,
+        attach.width,
+        attach.height
+    );
 
     Ok(())
+}
+
+pub fn tnt_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
+    todo!()
+}
+
+pub fn fire_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
+    todo!()
 }

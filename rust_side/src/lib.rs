@@ -16,10 +16,17 @@ pub struct DAtom {
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
-pub struct Mouse {
+pub struct MouseInfo {
     posx: i64,
     posy: i64,
     selected_tag: i64,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct CFloatVector {
+    ptr: *mut f64,
+    size: u64
 }
 
 type EntityTag = i64;
@@ -56,6 +63,8 @@ pub extern "C" fn compute(
     drawing_buffer: *mut DAtom,
     buffer_width: i64,
     buffer_height: i64,
+    mouse: &MouseInfo,
+    shader_buffers: CVector,
 ) {
     let (buffer_width, buffer_height): (usize, usize) = (buffer_width.try_into().unwrap(), buffer_height.try_into().unwrap());
     let buffer_size = buffer_height * buffer_width;
@@ -70,7 +79,22 @@ pub extern "C" fn compute(
             let current_atom = logic_buffer[i];
             if current_atom.priority != p { continue }
 
-            apply_rules(&mut logic_buffer, &mut new_logic_buffer, i, buffer_width, buffer_height);
+            let shader = match current_atom.entity_tag.into() {
+                0 => nothing_shader,
+                1 => ant_shader,
+                2 => tnt_shader,
+                3 => fire_shader,
+            };
+            let attach = AttachmentsForApply {
+                buffers: todo!(),
+                old_logic_buffer: Box::new(*logic_buffer),
+                new_logic_buffer: Box::new(new_logic_buffer),
+                mouse_pos: todo!(),
+                width:  buffer_width,
+                height: buffer_height
+            };
+
+            shader(i, &mut attach).unwrap();
         }
     }
     println!("Finished calculating frame");
@@ -81,7 +105,7 @@ pub extern "C" fn compute(
 }
 
 #[no_mangle]
-pub extern "C" fn update_mouse(mouse: Mouse, drawing_buffer: *mut DAtom, buffer_width: i64, buffer_height: i64) {
+pub extern "C" fn update_mouse(mouse: MouseInfo, drawing_buffer: *mut DAtom, buffer_width: i64, buffer_height: i64) {
     let buffer_width: usize = buffer_width.try_into().unwrap();
     let buffer_height: usize = buffer_height.try_into().unwrap();
     if mouse.posx >= 0_i64 && mouse.posy >= 0_i64 {

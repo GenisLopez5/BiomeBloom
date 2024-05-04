@@ -27,43 +27,25 @@ impl From<Atom> for DAtom {
 /// Map from Entity -> Vec<(Neighbours, [Option<Entity>; 9])>
 /// Maps entity with its (needed) neighbours to its (maybe) changing surrounding neighbours
 /// NOTE: They are both reversed!
-fn primitive_rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>; 9])>> {
-    use Entity as E;
-    HashMap::from([
-        (E::Ant as i64, 
-            vec![
-                ([None,          None,           None,
-                 None,                          None,
-                 None, Some(E::Nothing.into()), None],
-
-                [None,          None,           None,
-                 None, Some(E::Nothing.into()), None,
-                 None, Some(E::Ant.into()),     None]),
-
-
-                ([None,         None,             None,
-                 None,                   Some(E::Nothing.into()),
-                 None,          None,             None],
-
-                [None,          None,               None,
-                 None, Some(E::Nothing.into()), Some(E::Ant.into()),
-                 None,          None,                None])
-            ]
-        ),
-        (E::Tnt.into(),
-            vec![
-                ([Some(E::Ant.into()), None, None, None, None, None, None, None], [None; 9]),
-                ([None, Some(E::Ant.into()), None, None, None, None, None, None], [None; 9]),
-                ([None, None, Some(E::Ant.into()), None, None, None, None, None], [None; 9]),
-                ([None, None, None, Some(E::Ant.into()), None, None, None, None], [None; 9]),
-                ([None, None, None, None, Some(E::Ant.into()), None, None, None], [None; 9]),
-                ([None, None, None, None, None, Some(E::Ant.into()), None, None], [None; 9]),
-                ([None, None, None, None, None, None, Some(E::Ant.into()), None], [None; 9]),
-                ([None, None, None, None, None, None, None, Some(E::Ant.into())], [None; 9]),
-            ]
-        )
-    ])
-}
+//fn primitive_rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>; 9])>> {
+//    use Entity as E;
+//    HashMap::from([
+//        (E::Ant as i64, 
+//        ),
+//        (E::Tnt.into(),
+//            vec![
+//                ([Some(E::Ant.into()), None, None, None, None, None, None, None], [None; 9]),
+//                ([None, Some(E::Ant.into()), None, None, None, None, None, None], [None; 9]),
+//                ([None, None, Some(E::Ant.into()), None, None, None, None, None], [None; 9]),
+//                ([None, None, None, Some(E::Ant.into()), None, None, None, None], [None; 9]),
+//                ([None, None, None, None, Some(E::Ant.into()), None, None, None], [None; 9]),
+//                ([None, None, None, None, None, Some(E::Ant.into()), None, None], [None; 9]),
+//                ([None, None, None, None, None, None, Some(E::Ant.into()), None], [None; 9]),
+//                ([None, None, None, None, None, None, None, Some(E::Ant.into())], [None; 9]),
+//            ]
+//        )
+//    ])
+//}
 
 
 fn neighbour_count(buffer: &[Atom], index: usize) -> HashMap<EntityTag, usize> {
