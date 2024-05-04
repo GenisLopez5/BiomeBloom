@@ -103,18 +103,19 @@ pub fn fire_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(),
 }
 
 pub fn water_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
+    let current_pos = Position::from_index(index, attach.width, attach.height);
     let water_neighs = find_neighbours_of_buffer(
-        0,
-        attach.buffers,
-        Position::from_index(index, attach.width, attach.height),
-        attach.width,
-        attach.height
+        0, attach.buffers, current_pos, attach.width, attach.height
     );
-    let current_height = unsafe { *attach.buffers.add(index + 0) };
+    let water_neighs = water_neighs.iter()
+        .zip(current_pos.neighbours(attach.width, attach.height))
+        .map(|(&h, p)| {
+            if attach.old_logic_buffer[index].entity_tag != Entity::Nothing.into() { i64::MAX } else { h }
+    });
+    let current_height = unsafe { *attach.buffers.add(index + 0*attach.width*attach.height) };
     let indexes_of_lower: Vec<usize> = water_neighs
-        .iter()
         .enumerate()
-        .filter(|(i, &h)| h < current_height)
+        .filter(|(_i, h)| h < &current_height)
         .map(|(index, _)| index)
         .collect();
 
