@@ -147,10 +147,17 @@ pub fn fire_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> 
 
 /// If there's dirt next to it, it becomes grass
 pub fn grass_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
-    Position::from_index(index, a.width, a.height).neighbours(a.width, a.height)
+    let neighs: Vec<Position> = Position::from_index(index, a.width, a.height).neighbours(a.width, a.height)
         .into_iter().filter(|p| {
             a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Dirt.into()
-        }).for_each(|p| a.new_logic_buffer[p.as_idx(a.width, a.height)].entity_tag = E::Grass.into());
+        }).collect();
+    use rand::Rng;
+    let mut rng = rand::thread_rng();
+    if neighs.is_empty() { return Ok(()); }
+
+    let infected_pos = neighs[rng.gen_range(0..neighs.len())];
+    
+    a.new_logic_buffer[infected_pos.as_idx(a.width, a.height)].entity_tag = E::Grass.into();
     Ok(())
 }
 
