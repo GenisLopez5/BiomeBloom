@@ -1,6 +1,8 @@
 #include "Canvas.hh"
 #include "DAtom.hh"
 #include "SFML/Graphics.hpp"
+#include "Types.hh"
+#include <map>
 #include <vector>
 
 #pragma once
@@ -11,13 +13,13 @@ class Renderer {
   private:
     int rows;
     int cols;
-    vector<sf::Shader> shaders;
     vector<sf::Sprite> sprites;
-    vector<sf::Texture> textures;
-
-    void set_new_texture(DAtom &d_atom, sf::Sprite &sprite);
+    sf::Texture antTexture;
+    sf::Texture default_texture;
 
   public:
+    map<int64_t, sf::Shader> typetoshader;
+
     sf::RenderWindow window;
     DAtom *render_buffer;
 
