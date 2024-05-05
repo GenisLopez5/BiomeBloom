@@ -39,6 +39,8 @@ int main(int argc, char *argv[]) {
     sf::Event event;
 
     auto last_compute = chrono::steady_clock::now();
+    bool paused = false;
+    int miliseconds = 500;
     while (renderer.window.isOpen()) {
         // Window events
         while (renderer.window.pollEvent(event))
@@ -46,6 +48,12 @@ int main(int argc, char *argv[]) {
                 cout << "Closing window" << endl;
                 renderer.window.close();
             }
+        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) paused = true;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) paused = false;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) reset_buffer();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) miliseconds -= miliseconds > 50 ? 50 : 0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) miliseconds += 50;
 
         // Mouse events
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
@@ -67,7 +75,7 @@ int main(int argc, char *argv[]) {
         }
 
         if (chrono::steady_clock::now() - last_compute >=
-            chrono::milliseconds(300)) {
+            chrono::milliseconds(miliseconds)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
 
             mouse.posx = mousePos.x / SIZE;
