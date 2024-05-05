@@ -51,9 +51,11 @@ int main(int argc, char *argv[]) {
         
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) paused = true;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) paused = false;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) reset_buffer();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) miliseconds -= miliseconds > 50 ? 50 : 0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) miliseconds += 50;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) reset_buffer(renderer.getCols()*renderer.getRows());
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) miliseconds -= miliseconds > 10 ? 5 : 0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) miliseconds += 5;
+
+        if (paused) continue;
 
         // Mouse events
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
