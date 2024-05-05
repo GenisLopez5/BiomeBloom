@@ -119,8 +119,9 @@ pub fn ant_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
         use rand::Rng;
         let mut rng = rand::thread_rng();
 
-        let infected_pos = Position::from_index(rng.gen_range(0..grass_neigh.len()), a.width, a.height);
+        let infected_pos = grass_neigh[rng.gen_range(0..grass_neigh.len())];
         a.new_logic_buffer[infected_pos.as_idx(a.width, a.height)].entity_tag = E::Ant.into();
+        a.new_logic_buffer[index].entity_tag = E::Dirt.into();
     }
     Ok(())
 }

@@ -109,7 +109,7 @@ pub extern "C" fn update_mouse(
 ) {
     let buffer_width: usize = buffer_width.try_into().unwrap();
     let buffer_height: usize = buffer_height.try_into().unwrap();
-    if mouse.posx >= 0_i64 && mouse.posy >= 0_i64 {
+    if mouse.posx >= 0_i64 && mouse.posy >= 0_i64 && (mouse.posx as usize) < buffer_width && (mouse.posy as usize) < buffer_height {
         // dbg!(mouse);
         let pos = Position::new(mouse.posx as usize, mouse.posy as usize);
         let mut logic_buffer = LOGIC_BUFFER.lock().unwrap();
