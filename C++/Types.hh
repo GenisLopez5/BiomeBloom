@@ -1,4 +1,7 @@
 enum Types {
-    DEFAULT,
-    ANT,
+    TERRA,
+    HERBA,
+    FOC,
+    AIGUA,
+    FORMIGA,
 };
