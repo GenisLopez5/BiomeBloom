@@ -14,18 +14,18 @@ Renderer::Renderer(int atom_size)
 
     // SETUP texture[0] DEFAULT TEXTURE
 
-    typetoshader[Types::TERRA].loadFromFile("../data/mud_shader.glsl",
+    typetoshader[Types::TERRA].loadFromFile("../data/shaders/terra.glsl",
                                             sf::Shader::Type::Fragment);
-    typetoshader[Types::HERBA].loadFromFile("../data/grass.glsl",
+    typetoshader[Types::HERBA].loadFromFile("../data/shaders/formiga.glsl",
                                             sf::Shader::Type::Fragment);
-    typetoshader[Types::FOC].loadFromFile("../data/mud_shader.glsl",
+    typetoshader[Types::FOC].loadFromFile("../data/shaders/terra.glsl",
                                           sf::Shader::Type::Fragment);
-    typetoshader[Types::AIGUA].loadFromFile("../data/mud_shader.glsl",
+    typetoshader[Types::AIGUA].loadFromFile("../data/shaders/terra.glsl",
                                             sf::Shader::Type::Fragment);
-    typetoshader[Types::FORMIGA].loadFromFile("../data/mud_shader.glsl",
+    typetoshader[Types::FORMIGA].loadFromFile("../data/shaders/terra.glsl",
                                               sf::Shader::Type::Fragment);
 
-    typetoshader[Types::AIGUA].setUniform("time", 0);
+    typetoshader[Types::HERBA].setUniform("time", 0);
 
     // SETUP SPRITES VECTOR (ALL START BEING DEFAULT)
     sf::Vector2f pos = {0, 0};
@@ -54,7 +54,7 @@ void Renderer::render() {
                 .count();
 
         sf::RenderStates rendStates(&typetoshader[render_buffer[i].material]);
-        typetoshader[Types::AIGUA].setUniform("time", time);
+        typetoshader[Types::HERBA].setUniform("time", time);
 
         window.draw(sprites[i], rendStates);
     }
