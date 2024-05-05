@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <map>
 #include <string>
@@ -33,11 +34,15 @@ class Canvas {
     sf::Vector2f BottomMiddle;
     sf::Vector2f BottomRight;
 
+    bool intersectElement(string name, sf::Vector2i m_pos);
+
     Canvas(int size_x, int size_y);
-    sf::Text& addText(string textName, string content, string fontDir,
+    void addText(string textName, string content, string fontDir,
                  unsigned int size, sf::Vector2f pos, sf::Vector2f anchor);
-    sf::Sprite& addSprite(string spriteName, string textureDir, sf::Vector2f pos,
+
+    void addSprite(string spriteName, string textureDir, sf::Vector2f pos,
                    sf::Vector2f anchor, float scale = 1);
+
     void removeText(string textName);
     void removeSprite(string spriteText);
 };

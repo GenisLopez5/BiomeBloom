@@ -55,9 +55,7 @@ int main(int argc, char *argv[]) {
             mouse.posy = mousePos.y / SIZE;
 
             if (mousePos.y > renderer.window.getSize().y - 75) {
-                mouse.selected_tag =
-                    mousePos.x / (renderer.window.getSize().x / 9);
-                gameUI.ChangedMaterial(mouse.selected_tag);
+                mouse.selected_tag = gameUI.manageInput(mousePos);
             }
 
             cout << "calling update mouse: mouse tag" << mouse.selected_tag

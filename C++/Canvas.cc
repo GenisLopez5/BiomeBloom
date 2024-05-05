@@ -1,4 +1,5 @@
 #include "Canvas.hh"
+#include "MouseInfo.hh"
 #include <SFML/Graphics/Texture.hpp>
 
 Canvas::Canvas(int size_x, int size_y) {
@@ -16,20 +17,25 @@ Canvas::Canvas(int size_x, int size_y) {
     BottomRight = sf::Vector2f(size_x, size_y);
 }
 
-sf::Text &Canvas::addText(string textName, string content, string fontDir,
-                          unsigned int size, sf::Vector2f pos,
-                          sf::Vector2f anchor) {
+void Canvas::addText(string textName, string content, string fontDir,
+                     unsigned int size, sf::Vector2f pos, sf::Vector2f anchor) {
     sf::Font f;
     f.loadFromFile(fontDir);
     TextMap[textName] = sf::Text(content, f, size);
     // text.setOrigin(sf::Vector2f(anchor.x * text.))
     TextMap[textName].setPosition(pos);
-
-    return TextMap[textName];
 }
-sf::Sprite &Canvas::addSprite(string spriteName, string textureDir,
-                              sf::Vector2f pos, sf::Vector2f anchor,
-                              float scale) {
+
+bool Canvas::intersectElement(string name, sf::Vector2i m_pos) {
+    const sf::Sprite &sprite = SpriteMap[name].sprite;
+    if (sprite.getGlobalBounds().contains(m_pos.x, m_pos.y)) {
+        return true;
+    }
+    return false;
+}
+
+void Canvas::addSprite(string spriteName, string textureDir, sf::Vector2f pos,
+                       sf::Vector2f anchor, float scale) {
     SpriteMap[spriteName] = {sf::Sprite(), sf::Texture()};
     SpriteMap[spriteName].texture.loadFromFile(textureDir);
     SpriteMap[spriteName].sprite.setTexture(SpriteMap[spriteName].texture);
@@ -40,8 +46,6 @@ sf::Sprite &Canvas::addSprite(string spriteName, string textureDir,
 
     SpriteMap[spriteName].sprite.setPosition(pos);
     SpriteMap[spriteName].sprite.setScale(sf::Vector2f(scale, scale));
-
-    return SpriteMap[spriteName].sprite;
 }
 void Canvas::removeText(string textName) { TextMap.erase(textName); }
 void Canvas::removeSprite(string spriteName) { SpriteMap.erase(spriteName); }
