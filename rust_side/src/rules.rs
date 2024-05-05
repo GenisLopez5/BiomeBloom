@@ -24,31 +24,7 @@ impl From<Atom> for DAtom {
     }
 }
 
-/// Map from Entity -> Vec<(Neighbours, [Option<Entity>; 9])>
-/// Maps entity with its (needed) neighbours to its (maybe) changing surrounding neighbours
-/// NOTE: They are both reversed!
-//fn primitive_rules() -> HashMap<EntityTag, Vec<([Option<EntityTag>; 8] ,[Option<EntityTag>; 9])>> {
-//    use Entity as E;
-//    HashMap::from([
-//        (E::Ant as i64, 
-//        ),
-//        (E::Tnt.into(),
-//            vec![
-//                ([Some(E::Ant.into()), None, None, None, None, None, None, None], [None; 9]),
-//                ([None, Some(E::Ant.into()), None, None, None, None, None, None], [None; 9]),
-//                ([None, None, Some(E::Ant.into()), None, None, None, None, None], [None; 9]),
-//                ([None, None, None, Some(E::Ant.into()), None, None, None, None], [None; 9]),
-//                ([None, None, None, None, Some(E::Ant.into()), None, None, None], [None; 9]),
-//                ([None, None, None, None, None, Some(E::Ant.into()), None, None], [None; 9]),
-//                ([None, None, None, None, None, None, Some(E::Ant.into()), None], [None; 9]),
-//                ([None, None, None, None, None, None, None, Some(E::Ant.into())], [None; 9]),
-//            ]
-//        )
-//    ])
-//}
-
-
-fn neighbour_count(buffer: &[Atom], index: usize) -> HashMap<EntityTag, usize> {
+pub fn neighbour_count(buffer: &[Atom], index: usize) -> HashMap<EntityTag, usize> {
     let mut result = HashMap::new();
     for i in 0..3 {
         for j in 0..3 {
@@ -64,6 +40,27 @@ fn neighbour_count(buffer: &[Atom], index: usize) -> HashMap<EntityTag, usize> {
     result
 
 }
+
+
+
+pub fn find_neighbours_of_buffer(
+    buffer_idx: usize,
+    buffers: *const i64,
+    pos: Position,
+    width: usize,
+    height: usize
+) -> [i64; 8] {
+    let neighbor_posses = pos.neighbours(width, height);
+    let delta = buffer_idx * width * height;
+    let mut result = [0; 8];
+    for (i, p) in neighbor_posses.iter().enumerate() {
+        let idx = p.as_idx(width, height) + delta;
+        result[i] = unsafe { *buffers.add(idx) };
+    }
+    result
+
+}
+
 
 /// Pre: Index refers to element in grid
 /// Post: Eight element array of the eight neighbours (toroidal geometry) that surrounds the pixel at the given index

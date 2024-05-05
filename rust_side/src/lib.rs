@@ -39,21 +39,6 @@ impl Atom {
     };
 }
 
-#[repr(u64)]
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
-enum Entity {
-    Nothing,
-    Ant,
-    Tnt,
-    Fire,
-    Water,
-    Lava,
-    Rock,
-    TBD1,
-    TBD2,
-    Burnt,
-}
-
 // Internal buffer, in case we need to add things like Lifetimes or whatever
 static LOGIC_BUFFER: Mutex<Vec<Atom>> = Mutex::new(Vec::new());
 
@@ -89,13 +74,11 @@ pub extern "C" fn compute(
 
             use Entity as E;
             let shader = match current_atom.entity_tag.into() {
-                E::Nothing => nothing_shader,
+                E::Dirt => nothing_shader,
+                E::Grass => grass_shader,
                 E::Ant => ant_shader,
-                E::Tnt => tnt_shader,
                 E::Fire => fire_shader,
                 E::Water => water_shader,
-                
-                E::Burnt => nothing_shader,
                 t => missing_shader,
             };
             let mut attach = AttachmentsForApply {
