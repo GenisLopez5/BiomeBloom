@@ -14,9 +14,9 @@ pub struct AttachmentsForApply<'a> {
 pub enum Entity {
     Dirt,
     Grass,
-    Ant,
     Fire,
     Water,
+    Ant,
 }
 
 #[derive(Clone, Copy)]
