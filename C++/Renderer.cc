@@ -48,12 +48,13 @@ void Renderer::render() {
 
     for (int i = 0; i < rows * cols; ++i) {
 
-        sf::RenderStates rendStates(&typetoshader[render_buffer[i].material]);
-        typetoshader[Types::AIGUA].setUniform(
-            "time",
+        float time =
             (float)std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::steady_clock::now().time_since_epoch())
-                .count());
+                .count();
+
+        sf::RenderStates rendStates(&typetoshader[render_buffer[i].material]);
+        typetoshader[Types::AIGUA].setUniform("time", time);
 
         window.draw(sprites[i], rendStates);
     }
