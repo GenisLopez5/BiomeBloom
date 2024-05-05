@@ -48,7 +48,10 @@ enum Entity {
     Fire,
     Water,
     Lava,
-    Rock
+    Rock,
+    TBD1,
+    TBD2,
+    Burnt,
 }
 
 // Internal buffer, in case we need to add things like Lifetimes or whatever
@@ -84,12 +87,15 @@ pub extern "C" fn compute(
                 continue;
             }
 
+            use Entity as E;
             let shader = match current_atom.entity_tag.into() {
-                0i64 => nothing_shader,
-                1 => ant_shader,
-                2 => tnt_shader,
-                3 => fire_shader,
-                4 => water_shader,
+                E::Nothing => nothing_shader,
+                E::Ant => ant_shader,
+                E::Tnt => tnt_shader,
+                E::Fire => fire_shader,
+                E::Water => water_shader,
+                
+                E::Burnt => nothing_shader,
                 t => missing_shader,
             };
             let mut attach = AttachmentsForApply {
