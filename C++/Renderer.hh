@@ -25,7 +25,7 @@ class Renderer {
 
     Renderer(int atom_size);
 
-    void render();
+    void render(int64_t *float_fields);
     void renderCanvas(Canvas &canvas);
     int getRows() const;
     int getCols() const;

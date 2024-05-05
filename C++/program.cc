@@ -48,14 +48,18 @@ int main(int argc, char *argv[]) {
                 cout << "Closing window" << endl;
                 renderer.window.close();
             }
-        
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) paused = true;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) paused = false;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) reset_buffer(renderer.getCols()*renderer.getRows());
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) miliseconds -= miliseconds > 10 ? 5 : 0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) miliseconds += 5;
 
-        if (paused) continue;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+            paused = true;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+            paused = false;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+            reset_buffer(renderer.render_buffer,
+                         renderer.getCols() * renderer.getRows());
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            miliseconds -= miliseconds > 10 ? 5 : 0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            miliseconds += 5;
 
         // Mouse events
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
@@ -77,7 +81,8 @@ int main(int argc, char *argv[]) {
         }
 
         if (chrono::steady_clock::now() - last_compute >=
-            chrono::milliseconds(miliseconds)) {
+                chrono::milliseconds(miliseconds) and
+            not paused) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
 
             mouse.posx = mousePos.x / SIZE;
@@ -91,7 +96,7 @@ int main(int argc, char *argv[]) {
         }
 
         renderer.window.clear();
-        renderer.render();
+        renderer.render(floatFields);
         renderer.renderCanvas(gameUI);
         renderer.window.display();
     }

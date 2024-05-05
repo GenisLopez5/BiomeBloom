@@ -42,7 +42,7 @@ Renderer::Renderer(int atom_size)
     render_buffer = new DAtom[rows * cols];
 }
 
-void Renderer::render() {
+void Renderer::render(int64_t *float_fields) {
 
     for (int i = 0; i < rows * cols; ++i) {
 
@@ -54,6 +54,9 @@ void Renderer::render() {
         sf::RenderStates rendStates(&typetoshader[render_buffer[i].material]);
         typetoshader[Types::AIGUA].setUniform("time", time);
         typetoshader[Types::FOC].setUniform("time", time);
+
+        /* typetoshader[render_buffer[i].material].setUniform( */
+        /*     "height", (int)float_fields[i]); */
 
         window.draw(sprites[i], rendStates);
     }
