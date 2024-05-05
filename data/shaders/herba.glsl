@@ -1,9 +1,10 @@
 #version 330 core
 out vec4 FragColor;
 
-vec4 light_green = vec4(0.16, 0.86, 0.12, 1.0);
+vec4 light_green = vec4(0.16, 0.86, 0.12, 1.0) + 0.1;
 vec4 dark_green =
-vec4(0.13, 0.40, 0.11, 1.0);
+vec4(0.13, 0.40, 0.11, 1.0) + 0.1;
+uniform float height;
 
 //	Classic Perlin 2D Noise 
 //	by Stefan Gustavson
@@ -57,5 +58,6 @@ void main()
     vec4 little_sand = mix(dark_green, light_green, fit01(cnoise(gl_FragCoord.xy * 0.3), 0.1, 0.3)); 
     vec4 big_rocks = mix(dark_green, light_green, fit01(cnoise(gl_FragCoord.xy * 0.1), 0.1, 0.3)); 
     FragColor = vec4(mix(little_sand, big_rocks, fit01(cnoise(gl_FragCoord.xy * 0.3 + 10), 0.1, 0.3)));
+    FragColor = mix(FragColor*0.8, FragColor, height);
 }   
 

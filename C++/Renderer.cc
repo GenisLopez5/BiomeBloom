@@ -55,8 +55,8 @@ void Renderer::render(int64_t *float_fields) {
         typetoshader[Types::AIGUA].setUniform("time", time);
         typetoshader[Types::FOC].setUniform("time", time);
 
-        /* typetoshader[render_buffer[i].material].setUniform( */
-        /*     "height", (int)float_fields[i]); */
+        typetoshader[render_buffer[i].material].setUniform(
+            "height", (float)float_fields[i] / 20.0f);
 
         window.draw(sprites[i], rendStates);
     }
