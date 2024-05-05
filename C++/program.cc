@@ -19,9 +19,20 @@ int main(int argc, char *argv[]) {
 
     GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
 
+    MouseInfo mouse;
+    mouse.selected_tag = 1;
+
     cout << "[INFO (C++)]: Creant fields" << endl;
-    int64_t* floatFields =  // <--- Mega buffer
-        (int64_t*)malloc(sizeof(int64_t) * NUM_OF_FIELDS*renderer.getCols()*renderer.getRows());
+    int64_t *floatFields = // <--- Mega buffer
+        (int64_t *)malloc(sizeof(int64_t) * NUM_OF_FIELDS * renderer.getCols() *
+                          renderer.getRows());
+    for (int i = 0; i < NUM_OF_FIELDS * renderer.getCols() * renderer.getRows();
+         ++i) {
+        int row = i / renderer.getCols();
+        int col = i % renderer.getCols();
+        floatFields[i] = abs(col - renderer.getCols() / 2) +
+                         abs(row - renderer.getRows() / 2);
+    }
     // TODO: Inicialitzeu els valors amb un funció continua aquí
 
     cout << "[INFO (C++)]: Fields creats" << endl;
@@ -40,15 +51,17 @@ int main(int argc, char *argv[]) {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
 
-            mousePos.x = mousePos.x / SIZE;
-            mousePos.y = mousePos.y / SIZE;
+            mouse.posx = mousePos.x / SIZE;
+            mouse.posy = mousePos.y / SIZE;
 
-            MouseInfo mouse;
-            mouse.posx = mousePos.x;
-            mouse.posy = mousePos.y;
+            if (mousePos.y > renderer.window.getSize().y - 75) {
+                mouse.selected_tag =
+                    mousePos.x / (renderer.window.getSize().x / 9);
+                gameUI.ChangedMaterial(mouse.selected_tag);
+            }
 
-            mouse.selected_tag = 1;
-            cout << "calling update mouse" << endl;
+            cout << "calling update mouse: mouse tag" << mouse.selected_tag
+                 << endl;
 
             update_mouse(mouse, renderer.render_buffer, renderer.getCols(),
                          renderer.getRows());
@@ -57,14 +70,9 @@ int main(int argc, char *argv[]) {
         if (chrono::steady_clock::now() - last_compute >= chrono::seconds(1)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
 
-            mousePos.x = mousePos.x / SIZE;
-            mousePos.y = mousePos.y / SIZE;
+            mouse.posx = mousePos.x / SIZE;
+            mouse.posy = mousePos.y / SIZE;
 
-            MouseInfo mouse;
-            mouse.posx = mousePos.x;
-            mouse.posy = mousePos.y;
-
-            mouse.selected_tag = 1;
             cout << "first address is: " << floatFields << endl;
             compute(renderer.render_buffer, renderer.getCols(),
                     renderer.getRows(), mouse, floatFields);

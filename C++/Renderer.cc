@@ -68,18 +68,19 @@ void Renderer::render() {
 void Renderer::renderCanvas(Canvas &canvas) {
 
     for (const auto &sprite : canvas.SpriteMap) {
-        cout << "sprite pos: " << sprite.second.sprite.getPosition().y << endl;
-        cout << "renderg sprite: " << sprite.first << endl;
+        /* cout << "sprite pos: " << sprite.second.sprite.getPosition().y <<
+         * endl; */
+        /* cout << "renderg sprite: " << sprite.first << endl; */
         window.draw(sprite.second.sprite);
     }
 
-    cout << "sprites drown" << endl;
+    /* cout << "sprites drown" << endl; */
 
     /* for (const auto &text : canvas.TextMap) {
         window.draw(text.second);
     } */
 
-    cout << "text_drown drown" << endl;
+    /* cout << "text_drown drown" << endl; */
 }
 
 int Renderer::getRows() const { return rows; };

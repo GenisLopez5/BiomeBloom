@@ -47,6 +47,11 @@ enum Entity {
     Tnt,
     Fire,
     Water,
+    Lava,
+    Rock,
+    TBD1,
+    TBD2,
+    Burnt,
 }
 
 // Internal buffer, in case we need to add things like Lifetimes or whatever
@@ -82,12 +87,16 @@ pub extern "C" fn compute(
                 continue;
             }
 
+            use Entity as E;
             let shader = match current_atom.entity_tag.into() {
-                0i64 => nothing_shader,
-                1 => ant_shader,
-                2 => tnt_shader,
-                3 => fire_shader,
-                t => unreachable!("Tag wasn't defined in the protocol in the GitHub Wiki: {t}"),
+                E::Nothing => nothing_shader,
+                E::Ant => ant_shader,
+                E::Tnt => tnt_shader,
+                E::Fire => fire_shader,
+                E::Water => water_shader,
+                
+                E::Burnt => nothing_shader,
+                t => missing_shader,
             };
             let mut attach = AttachmentsForApply {
                 buffers: shader_buffers,
@@ -155,12 +164,6 @@ fn init_logic_buffer_if_needed(
     for _ in 0..buffer_width * buffer_height {
         logic_buffer.push(Atom::NULL)
     }
-    let ant_pos = Position::new(buffer_width / 2, buffer_height / 2);
-    logic_buffer[ant_pos.as_idx(buffer_width, buffer_height)] = Atom {
-        entity_tag: Entity::Ant as i64,
-        priority: 1,
-        obsolete: true,
-    };
     printinfo("Finished initializing logic buffer");
 }
 
