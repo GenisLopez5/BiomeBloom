@@ -104,38 +104,43 @@ pub fn missing_shader(_index: usize, _attach: &mut AttachmentsForApply) -> Resul
     Ok(())
 }
 
-pub fn ant_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
-    use RuleEntity as RE;
-    use Entity as E;
-    let walk_right: Rule = (
-        [ RE::Any, RE::Any, RE::Any, RE::Any, RE::Any, RE::Any, RE::Basic(E::Dirt), RE::Any, ],
-        [ None, None, None, None, Some(E::Dirt.into()), None, None, Some(E::Ant.into()), None, ],
-    ).into();
+pub fn ant_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
+    let grass_neigh: Vec<_> = 
+        Position::from_index(index, a.width, a.height).neighbours(a.width, a.height)
+        .into_iter().filter(|p| a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Dirt.into()).collect();
 
-    let walk_down: Rule = (
-        [ RE::Any, RE::Any, RE::Any, RE::Any, RE::Basic(E::Dirt), RE::Any, RE::Basic(E::Dirt), RE::Any, ],
-        [ None, None, None, None, Some(E::Dirt.into()), Some(E::Ant.into()), None, None, None, ],
-    ).into();
+    if grass_neigh.is_empty() {
+        a.new_logic_buffer[index].entity_tag = E::Grass.into();
+    } else {
+        use rand::Rng;
+        let mut rng = rand::thread_rng();
 
-    apply_rule(
-        &walk_right,
-        &mut *attach.old_logic_buffer,
-        &mut attach.new_logic_buffer,
-        index,
-        attach.width,
-        attach.height,
-    );
-
+        let infected_pos = Position::from_index(rng.gen_range(0..grass_neigh.len()), a.width, a.height);
+        a.new_logic_buffer[infected_pos.as_idx(a.width, a.height)].entity_tag = E::Ant.into();
+    }
     Ok(())
 }
 
-pub fn fire_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
-    todo!("TRIED TO APPLY FIRE SHADER, BUT NOT YET IMPLEMENTED");
+pub fn fire_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
+    let card_neigh = 
+        Position::from_index(index, a.width, a.height).neighbours(a.width, a.height)
+        .into_iter().enumerate().filter(|(i, _p)| [1, 3, 4, 6].contains(i)).map(|(_, p)| p);
+    for p in card_neigh {
+        if a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Grass.into() {
+            a.new_logic_buffer[p.as_idx(a.width, a.height)].entity_tag = E::Fire.into();
+        }
+    }
     Ok(())
 }
 
-pub fn grass_shader(index: usize, attach: &mut AttachmentsForApply) -> Result<(), ()> {
-    todo!("TRIED TO APPLY FIRE SHADER, BUT NOT YET IMPLEMENTED");
+/// If there's dirt next to it, it becomes grass
+pub fn grass_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
+    let neigh_pos = Position::from_index(index, a.width, a.height).neighbours(a.width, a.height);
+    for p in neigh_pos {
+        if a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Dirt.into() {
+            a.new_logic_buffer[p.as_idx(a.width, a.height)].entity_tag = E::Grass.into();
+        }
+    }
     Ok(())
 }
 

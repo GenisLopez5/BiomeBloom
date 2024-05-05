@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+rand = { version = "0.8.3"} # For the ant
 
 [lib]
 name = "rusty_biome_bloom"
