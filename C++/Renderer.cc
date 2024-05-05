@@ -2,6 +2,7 @@
 #include "Types.hh"
 #include <SFML/Graphics/Glsl.hpp>
 #include <iostream>
+#include <chrono>
 
 Renderer::Renderer(int atom_size)
     : textures(2), window(sf::VideoMode(600, 800), "BiomeBloom"), shaders(2) {
@@ -14,7 +15,8 @@ Renderer::Renderer(int atom_size)
     textures[1].loadFromFile("../data/ant_texture.png");
     shaders[0].loadFromFile("../data/mud_shader.glsl",
                             sf::Shader::Type::Fragment);
-    shaders[1].loadFromFile("../data/grass.glsl", sf::Shader::Type::Fragment);
+    shaders[1].loadFromFile("../data/water.glsl", sf::Shader::Type::Fragment);
+    shaders[1].setUniform("time", 0);
 
     // SETUP SPRITES VECTOR (ALL START BEING DEFAULT)
     sf::Vector2f pos = {0, 0};
@@ -56,6 +58,8 @@ void Renderer::render() {
         if (render_buffer[i].material == Types::ANT) {
             window.draw(sprites[i], &shaders[0]);
         } else if (render_buffer[i].material == Types::DEFAULT) {
+            shaders[1].setUniform("time", (float) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
+            cout << ((float)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count()) << endl;
             window.draw(sprites[i], &shaders[1]);
         }
     }
