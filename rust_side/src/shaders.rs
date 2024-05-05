@@ -104,10 +104,14 @@ pub fn missing_shader(_index: usize, _attach: &mut AttachmentsForApply) -> Resul
     Ok(())
 }
 
+/// "Ant" means dirt that's infected:
+/// If there's dirt around it, randomly infect one other one 
+/// If there's no dirt aroudn it, die: leaves behind a Grass
 pub fn ant_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
     let grass_neigh: Vec<_> = 
         Position::from_index(index, a.width, a.height).neighbours(a.width, a.height)
-        .into_iter().filter(|p| a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Dirt.into()).collect();
+        .into_iter().filter(|p| a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Dirt.into())
+        .collect();
 
     if grass_neigh.is_empty() {
         a.new_logic_buffer[index].entity_tag = E::Grass.into();
@@ -121,26 +125,31 @@ pub fn ant_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
     Ok(())
 }
 
+/// Fire is lit, yo
+/// If there's grass in any of the cardinal directions, they get converted into fire
+/// If not, itself becomes a Dirt
 pub fn fire_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
-    let card_neigh = 
+    let grass_neigh: Vec<_> = 
         Position::from_index(index, a.width, a.height).neighbours(a.width, a.height)
-        .into_iter().enumerate().filter(|(i, _p)| [1, 3, 4, 6].contains(i)).map(|(_, p)| p);
-    for p in card_neigh {
-        if a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Grass.into() {
-            a.new_logic_buffer[p.as_idx(a.width, a.height)].entity_tag = E::Fire.into();
-        }
+        .into_iter().enumerate().filter(|(i, _p)| [1, 3, 4, 6].contains(i))
+        .filter(|(_i, p)| a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Grass.into())
+        .map(|(_, p)| p).collect();
+
+    if grass_neigh.is_empty() {
+        a.new_logic_buffer[index].entity_tag = E::Dirt.into(); // Fire dies if it doesn't see grass
+    }
+    for p in grass_neigh {
+        a.new_logic_buffer[p.as_idx(a.width, a.height)].entity_tag = E::Fire.into();
     }
     Ok(())
 }
 
 /// If there's dirt next to it, it becomes grass
 pub fn grass_shader(index: usize, a: &mut AttachmentsForApply) -> Result<(), ()> {
-    let neigh_pos = Position::from_index(index, a.width, a.height).neighbours(a.width, a.height);
-    for p in neigh_pos {
-        if a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Dirt.into() {
-            a.new_logic_buffer[p.as_idx(a.width, a.height)].entity_tag = E::Grass.into();
-        }
-    }
+    Position::from_index(index, a.width, a.height).neighbours(a.width, a.height)
+        .into_iter().filter(|p| {
+            a.old_logic_buffer[p.as_idx(a.width, a.height)].entity_tag == E::Dirt.into()
+        }).for_each(|p| a.new_logic_buffer[p.as_idx(a.width, a.height)].entity_tag = E::Grass.into());
     Ok(())
 }
 
