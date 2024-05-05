@@ -101,6 +101,13 @@ pub extern "C" fn compute(
 }
 
 #[no_mangle]
+pub extern "C" fn reset_buffer(buffer_size: i64) {
+    let mut buf = LOGIC_BUFFER.lock().unwrap();
+    for i in 0..buffer_size as usize {
+        buf[i] = Atom::NULL;
+    }
+}
+#[no_mangle]
 pub extern "C" fn update_mouse(
     mouse: MouseInfo,
     drawing_buffer: *mut DAtom,
