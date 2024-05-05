@@ -53,6 +53,7 @@ void Renderer::render() {
 
         sf::RenderStates rendStates(&typetoshader[render_buffer[i].material]);
         typetoshader[Types::AIGUA].setUniform("time", time);
+        typetoshader[Types::FOC].setUniform("time", time);
 
         window.draw(sprites[i], rendStates);
     }

@@ -57,8 +57,8 @@ float fit01(float value, float min, float max) {
 void main() {
     float time_new = time/1000.0;
     vec4 small_detail = mix(yellow, red, fit01(cnoise((gl_FragCoord.xy)*0.1), 0.1, 0.4)); 
-    vec4 big_detail = mix(yellow, red, fit01(cnoise((gl_FragCoord.xy) * 0.05), 0.1, 0.4)); 
-    FragColor = vec4(mix(small_detail, big_detail, fit01((sin(time*0.01) + 1.0)/2.0, 0.4, 0.5)));
+    vec4 big_detail = mix(yellow, red, fit01(cnoise((gl_FragCoord.xy) * 0.1 + 40), 0.1, 0.4)); 
+    FragColor = vec4(mix(small_detail, big_detail, fit01((sin(time*0.1) + 1.0)/2.0, 0, 1)));
 }   
 
 
