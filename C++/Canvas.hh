@@ -20,6 +20,7 @@ class Canvas {
     struct TexturedSprite {
         sf::Sprite sprite;
         sf::Texture texture;
+        bool clickeable;
     };
     map<string, TexturedSprite> SpriteMap;
     map<string, sf::Text> TextMap;
@@ -41,7 +42,8 @@ class Canvas {
                  unsigned int size, sf::Vector2f pos, sf::Vector2f anchor);
 
     void addSprite(string spriteName, string textureDir, sf::Vector2f pos,
-                   sf::Vector2f anchor, float scale = 1);
+                   sf::Vector2f anchor, float scale = 1,
+                   bool clickeable = true);
 
     void removeText(string textName);
     void removeSprite(string spriteText);

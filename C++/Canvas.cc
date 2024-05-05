@@ -28,15 +28,16 @@ void Canvas::addText(string textName, string content, string fontDir,
 
 bool Canvas::intersectElement(string name, sf::Vector2i m_pos) {
     const sf::Sprite &sprite = SpriteMap[name].sprite;
-    if (sprite.getGlobalBounds().contains(m_pos.x, m_pos.y)) {
+    if (SpriteMap[name].clickeable and
+        sprite.getGlobalBounds().contains(m_pos.x, m_pos.y)) {
         return true;
     }
     return false;
 }
 
 void Canvas::addSprite(string spriteName, string textureDir, sf::Vector2f pos,
-                       sf::Vector2f anchor, float scale) {
-    SpriteMap[spriteName] = {sf::Sprite(), sf::Texture()};
+                       sf::Vector2f anchor, float scale, bool clickeable) {
+    SpriteMap[spriteName] = {sf::Sprite(), sf::Texture(), clickeable};
     SpriteMap[spriteName].texture.loadFromFile(textureDir);
     SpriteMap[spriteName].sprite.setTexture(SpriteMap[spriteName].texture);
 

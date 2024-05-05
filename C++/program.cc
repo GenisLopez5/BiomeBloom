@@ -54,8 +54,9 @@ int main(int argc, char *argv[]) {
             mouse.posx = mousePos.x / SIZE;
             mouse.posy = mousePos.y / SIZE;
 
-            if (mousePos.y > renderer.window.getSize().y - 75) {
-                mouse.selected_tag = gameUI.manageInput(mousePos);
+            int tag = gameUI.manageInput(mousePos);
+            if (tag >= 0) {
+                mouse.selected_tag = tag;
             }
 
             cout << "calling update mouse: mouse tag" << mouse.selected_tag
@@ -65,7 +66,8 @@ int main(int argc, char *argv[]) {
                          renderer.getRows());
         }
 
-        if (chrono::steady_clock::now() - last_compute >= chrono::seconds(1)) {
+        if (chrono::steady_clock::now() - last_compute >=
+            chrono::milliseconds(300)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
 
             mouse.posx = mousePos.x / SIZE;
