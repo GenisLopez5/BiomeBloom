@@ -26,14 +26,6 @@ void Canvas::addText(string textName, string content, string fontDir,
     TextMap[textName].setPosition(pos);
 }
 
-bool Canvas::intersectElement(string name, sf::Vector2i m_pos) {
-    const sf::Sprite &sprite = SpriteMap[name].sprite;
-    if (sprite.getGlobalBounds().contains(m_pos.x, m_pos.y)) {
-        return true;
-    }
-    return false;
-}
-
 void Canvas::addSprite(string spriteName, string textureDir, sf::Vector2f pos,
                        sf::Vector2f anchor, float scale) {
     SpriteMap[spriteName] = {sf::Sprite(), sf::Texture()};
@@ -47,5 +39,6 @@ void Canvas::addSprite(string spriteName, string textureDir, sf::Vector2f pos,
     SpriteMap[spriteName].sprite.setPosition(pos);
     SpriteMap[spriteName].sprite.setScale(sf::Vector2f(scale, scale));
 }
+
 void Canvas::removeText(string textName) { TextMap.erase(textName); }
 void Canvas::removeSprite(string spriteName) { SpriteMap.erase(spriteName); }

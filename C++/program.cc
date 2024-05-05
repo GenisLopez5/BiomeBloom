@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstdint>
 #include <iostream>
+#include "Button.hh"
 
 using namespace std;
 
@@ -17,10 +18,10 @@ int main(int argc, char *argv[]) {
 
     Renderer renderer(SIZE);
 
-    GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
-
     MouseInfo mouse;
-    mouse.selected_tag = 1;
+    mouse.selected_tag = 0;
+
+    GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y, &mouse.selected_tag);
 
     cout << "[INFO (C++)]: Creant fields" << endl;
     int64_t *floatFields = // <--- Mega buffer
@@ -51,12 +52,10 @@ int main(int argc, char *argv[]) {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
 
+            Button<GameUI>::MouseClicked(mousePos);
+
             mouse.posx = mousePos.x / SIZE;
             mouse.posy = mousePos.y / SIZE;
-
-            if (mousePos.y > renderer.window.getSize().y - 75) {
-                mouse.selected_tag = gameUI.manageInput(mousePos);
-            }
 
             cout << "calling update mouse: mouse tag" << mouse.selected_tag
                  << endl;
