@@ -101,10 +101,11 @@ pub extern "C" fn compute(
 }
 
 #[no_mangle]
-pub extern "C" fn reset_buffer(buffer_size: i64) {
+pub extern "C" fn reset_buffer(draw_buffer: *mut DAtom, buffer_size: i64) {
     let mut buf = LOGIC_BUFFER.lock().unwrap();
     for i in 0..buffer_size as usize {
         buf[i] = Atom::NULL;
+        unsafe { *draw_buffer.add(i) = DAtom { material: 0, obsolete: true} };
     }
 }
 #[no_mangle]
