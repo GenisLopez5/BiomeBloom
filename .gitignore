@@ -3,4 +3,4 @@ build/
 *.exe
 .vscode/c_cpp_properties.json
 .cache/clangd/index
-C++/program
+.direnv/
