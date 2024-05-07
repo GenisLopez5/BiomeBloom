@@ -5,8 +5,8 @@
 #include <chrono>
 #include <iostream>
 
-Renderer::Renderer(int atom_size)
-    : window(sf::VideoMode(600, 800), "BiomeBloom") {
+Renderer::Renderer(int atom_size, int width, int height)
+    : window(sf::VideoMode(width, height), "BiomeBloom") {
     default_texture.loadFromFile("../data/default.png");
 
     rows = window.getSize().y / atom_size;

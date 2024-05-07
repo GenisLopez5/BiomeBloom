@@ -23,7 +23,7 @@ class Renderer {
     sf::RenderWindow window;
     DAtom *render_buffer;
 
-    Renderer(int atom_size);
+    Renderer(int atom_size, int width, int height);
 
     void render(int64_t *float_fields);
     void renderCanvas(Canvas &canvas);

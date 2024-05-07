@@ -15,7 +15,17 @@ const int NUM_OF_FIELDS = 3;
 
 int main(int argc, char *argv[]) {
 
-    Renderer renderer(SIZE);
+    int size = SIZE;
+    int width = 800;
+    int height = 600;
+    if (argc == 4)
+    {
+	size = atoi(argv[1]);
+	width = atoi(argv[2]);
+	height = atoi(argv[3]);
+    }
+
+    Renderer renderer(size, width, height);
 
     GameUI gameUI(renderer.window.getSize().x, renderer.window.getSize().y);
 
