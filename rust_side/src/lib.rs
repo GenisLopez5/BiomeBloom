@@ -67,32 +67,25 @@ pub extern "C" fn compute(
     println!("{y}");
 
     for i in 0..buffer_size {
-        for p in 0..=u8::MAX {
-            let current_atom = logic_buffer[i];
-            if current_atom.priority != p {
-                continue;
-            }
+        let current_atom = logic_buffer[i];
 
-            use Entity as E;
-            let shader = match current_atom.entity_tag.into() {
-                E::Dirt => nothing_shader,
-                E::Grass => grass_shader,
-                E::Ant => ant_shader,
-                E::Fire => fire_shader,
-                E::Water => water_shader,
-                t => missing_shader,
-            };
-            let mut attach = AttachmentsForApply {
-                buffers: shader_buffers,
-                old_logic_buffer: &mut *logic_buffer,
-                new_logic_buffer: &mut new_logic_buffer,
-                mouse_pos: mouse,
-                width: buffer_width,
-                height: buffer_height,
-            };
+        let shader = match current_atom.entity_tag.into() {
+            Entity::Dirt => nothing_shader,
+            Entity::Grass => grass_shader,
+            Entity::Ant => ant_shader,
+            Entity::Fire => fire_shader,
+            Entity::Water => water_shader,
+        };
+        let mut attach = AttachmentsForApply {
+            buffers: shader_buffers,
+            old_logic_buffer: &mut *logic_buffer,
+            new_logic_buffer: &mut new_logic_buffer,
+            mouse_pos: mouse,
+            width: buffer_width,
+            height: buffer_height,
+        };
 
-            shader(i, &mut attach).unwrap();
-        }
+        shader(i, &mut attach).unwrap();
     }
     println!("Finished calculating frame");
 
