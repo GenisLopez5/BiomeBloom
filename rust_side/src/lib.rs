@@ -23,6 +23,7 @@ pub struct MouseInfo {
 }
 
 type EntityTag = i64;
+
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Atom {
@@ -47,7 +48,7 @@ pub extern "C" fn compute(
     drawing_buffer: *mut DAtom,
     buffer_width: i64,
     buffer_height: i64,
-    mouse: &MouseInfo,
+    mouse: MouseInfo,
     shader_buffers: *mut i64,
 ) {
     let (buffer_width, buffer_height): (usize, usize) = (
@@ -85,7 +86,7 @@ pub extern "C" fn compute(
                 buffers: shader_buffers,
                 old_logic_buffer: &mut *logic_buffer,
                 new_logic_buffer: &mut new_logic_buffer,
-                mouse_pos: *mouse,
+                mouse_pos: mouse,
                 width: buffer_width,
                 height: buffer_height,
             };

@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
             mouse.posx = mousePos.x / SIZE;
             mouse.posy = mousePos.y / SIZE;
 
-            cout << "first address is: " << floatFields << endl;
+            cout << "[INFO (C++)]: first address is: " << floatFields << endl;
             compute(renderer.render_buffer, renderer.getCols(),
                     renderer.getRows(), mouse, floatFields);
             last_compute = chrono::steady_clock::now();
