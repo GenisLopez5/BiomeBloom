@@ -75,8 +75,8 @@ int main(int argc, char *argv[]) {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
 
-            mouse.posx = mousePos.x / SIZE;
-            mouse.posy = mousePos.y / SIZE;
+            mouse.posx = mousePos.x / size;
+            mouse.posy = mousePos.y / size;
 
             int tag = gameUI.manageInput(mousePos);
             if (tag >= 0) {
@@ -95,8 +95,8 @@ int main(int argc, char *argv[]) {
             not paused) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(renderer.window);
 
-            mouse.posx = mousePos.x / SIZE;
-            mouse.posy = mousePos.y / SIZE;
+            mouse.posx = mousePos.x / size;
+            mouse.posy = mousePos.y / size;
 
             cout << "[INFO (C++)]: first address is: " << floatFields << endl;
             compute(renderer.render_buffer, renderer.getCols(),
